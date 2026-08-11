@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/app_colors.dart';
+import '../../../profile/view/profile_screen.dart';
 import '../widgets/otp_code_input.dart';
 import '../widgets/otp_numeric_keypad.dart';
 
@@ -47,11 +48,15 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void _addDigit(String digit) {
-    if (_digits.length >=4 ) return;
+    if (_digits.length >= 4) return;
 
     setState(() {
       _digits.add(digit);
     });
+
+    if (_digits.length == 4) {
+      _navigateToProfile();
+    }
   }
 
   void _removeDigit() {
@@ -75,6 +80,12 @@ class _OtpScreenState extends State<OtpScreen> {
     _startCountdown();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('A new code has been requested')),
+    );
+  }
+
+  void _navigateToProfile() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const ProfileScreen()),
     );
   }
 
