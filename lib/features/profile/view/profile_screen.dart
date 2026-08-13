@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_colors.dart';
 import '../../../core/widgets/app_bottom_nav.dart';
 import '../../../core/widgets/app_header.dart';
+import '../../chat/view/chat_list_page.dart';
 
 import '../model/profile_model.dart';
 import '../widgets/profile_action_buttons.dart';
@@ -171,11 +172,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _currentNavIndex = index;
     });
 
-    // TODO:
-    // 0 -> Home
-    // 1 -> Discover
-    // 2 -> Messages
-    // 3 -> Alerts
-    // 4 -> Profile
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ChatListPage(),
+        ),
+      );
+    }
   }
 }

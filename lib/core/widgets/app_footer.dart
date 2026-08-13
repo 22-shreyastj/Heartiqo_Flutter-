@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../../app/app_colors.dart';
+import '../../features/chat/view/chat_list_page.dart';
 
 class ProfileFooter extends StatelessWidget {
-  const ProfileFooter({super.key});
+  final int selectedIndex;
+  final VoidCallback? onHomeTap;
+  final VoidCallback? onDiscoverTap;
+  final VoidCallback? onMessagesTap;
+  final VoidCallback? onAlertsTap;
+  final VoidCallback? onProfileTap;
+
+  const ProfileFooter({
+    super.key,
+    this.selectedIndex = 0,
+    this.onHomeTap,
+    this.onDiscoverTap,
+    this.onMessagesTap,
+    this.onAlertsTap,
+    this.onProfileTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,28 +32,48 @@ class ProfileFooter extends StatelessWidget {
           _FooterButton(
             icon: Icons.home_rounded,
             label: 'Home',
-            active: true,
-            onTap: () {},
+            active: selectedIndex == 0,
+            onTap: () {
+              onHomeTap?.call();
+            },
           ),
           _FooterButton(
             icon: Icons.compass_calibration_rounded,
             label: 'Discover',
-            onTap: () {},
+            active: selectedIndex == 1,
+            onTap: () {
+              onDiscoverTap?.call();
+            },
           ),
           _FooterButton(
             icon: Icons.chat_bubble_outline,
             label: 'Messages',
-            onTap: () {},
+            active: selectedIndex == 2,
+            onTap: () {
+              onMessagesTap?.call();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChatListPage(),
+                ),
+              );
+            },
           ),
           _FooterButton(
             icon: Icons.notifications_none,
             label: 'Alerts',
-            onTap: () {},
+            active: selectedIndex == 3,
+            onTap: () {
+              onAlertsTap?.call();
+            },
           ),
           _FooterButton(
             icon: Icons.person_outline,
             label: 'Profile',
-            onTap: () {},
+            active: selectedIndex == 4,
+            onTap: () {
+              onProfileTap?.call();
+            },
           ),
         ],
       ),
