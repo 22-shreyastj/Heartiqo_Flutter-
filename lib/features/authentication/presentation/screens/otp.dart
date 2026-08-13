@@ -140,7 +140,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             'Sent to ${widget.phoneNumber}',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: AppColors.darkPurple.withOpacity(0.75),
+                              color: AppColors.darkPurple.withValues(alpha: 0.75),
                               fontSize: isTablet ? 16 : 14,
                               letterSpacing: 0.2,
                             ),
@@ -175,7 +175,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       'Type the verification code we’ve sent you',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: AppColors.darkPurple.withOpacity(0.75),
+                        color: AppColors.darkPurple.withValues(alpha: 0.75),
                         fontSize: isTablet ? 18 : 16,
                         height: 1.5,
                       ),
@@ -186,7 +186,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.85),
+                        color: Colors.white.withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(28),
                       ),
                       child: OtpNumericKeypad(
@@ -198,7 +198,6 @@ class _OtpScreenState extends State<OtpScreen> {
                     const SizedBox(height: 24),
                     TextButton(
                       onPressed: _sendAgain,
-                      child: const Text('Send again'),
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.darkPurple,
                         textStyle: const TextStyle(
@@ -206,6 +205,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           fontSize: 16,
                         ),
                       ),
+                      child: const Text('Send again'),
                     ),
                     const SizedBox(height: 14),
                   ],

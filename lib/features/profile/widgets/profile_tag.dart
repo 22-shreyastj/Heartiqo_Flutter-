@@ -18,10 +18,10 @@ class ProfileTag extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(.28),
+        color: Colors.black.withValues(alpha: .28),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: Colors.white.withOpacity(.55),
+          color: Colors.white.withValues(alpha: .55),
         ),
       ),
       child: Row(

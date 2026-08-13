@@ -102,7 +102,7 @@ class AppHeader extends StatelessWidget {
             ? Image.asset(
                 avatarImage!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
+                errorBuilder: (context, error, stackTrace) {
                   return const Icon(Icons.person, color: AppColors.deepPink);
                 },
               )

@@ -75,8 +75,6 @@ class OtpDigitBox extends StatelessWidget {
       height: 64,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        // Filled → purple
-        // Empty → white
         color: isFilled
             ? AppColors.darkPurple
             : Colors.white,
@@ -88,14 +86,14 @@ class OtpDigitBox extends StatelessWidget {
               ? AppColors.darkPurple
               : isActive
                   ? AppColors.darkPurple
-                  : AppColors.darkPurple.withOpacity(0.18),
+                  : AppColors.darkPurple.withValues(alpha: 0.18),
           width: isActive || isFilled ? 2 : 1.2,
         ),
 
         boxShadow: [
           if (isFilled)
             BoxShadow(
-              color: AppColors.darkPurple.withOpacity(0.18),
+              color: AppColors.darkPurple.withValues(alpha: 0.18),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

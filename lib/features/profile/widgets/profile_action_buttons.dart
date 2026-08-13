@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/app_colors.dart';
+import '../../../app/app_colors.dart';
 
 class ProfileActionButtons extends StatelessWidget {
   final VoidCallback? onReject;
@@ -33,7 +33,7 @@ class ProfileActionButtons extends StatelessWidget {
           onTap: onLike,
         ),
 
-        const SizedBox(width: 0),
+        const SizedBox(width: 12),
 
         _discoverButton(),
       ],
@@ -59,7 +59,7 @@ class ProfileActionButtons extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(.08),
+              color: Colors.black.withValues(alpha: .08),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

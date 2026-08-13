@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'features/authentication/presentation/screens/welcome_screen.dart';
+import 'app/routes.dart';
+import 'features/profile/view/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +14,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HeartIQo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.purple, useMaterial3: false),
-      home: const WelcomeScreen(),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+      ),
+      routes: AppRoutes.routes,
+      home: const ProfileScreen(),
     );
   }
 }

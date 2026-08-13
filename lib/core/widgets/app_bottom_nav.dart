@@ -23,21 +23,21 @@ class AppBottomNav extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _NavItem(
+          _buildNavItem(
             index: 0,
             icon: Icons.home_outlined,
             label: 'Home',
             selected: currentIndex == 0,
           ),
 
-          _NavItem(
+          _buildNavItem(
             index: 1,
             icon: Icons.explore_outlined,
             label: 'Discover',
             selected: currentIndex == 1,
           ),
 
-          _NavItem(
+          _buildNavItem(
             index: 2,
             icon: Icons.chat_bubble_outline_rounded,
             label: 'Messages',
@@ -45,14 +45,14 @@ class AppBottomNav extends StatelessWidget {
             notification: true,
           ),
 
-          _NavItem(
+          _buildNavItem(
             index: 3,
             icon: Icons.notifications_none_rounded,
             label: 'Alerts',
             selected: currentIndex == 3,
           ),
 
-          _NavItem(
+          _buildNavItem(
             index: 4,
             icon: Icons.person_outline_rounded,
             label: 'Profile',
@@ -63,7 +63,7 @@ class AppBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _NavItem({
+  Widget _buildNavItem({
     required int index,
     required IconData icon,
     required String label,

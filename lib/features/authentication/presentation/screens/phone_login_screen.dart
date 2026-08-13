@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/app_colors.dart';
@@ -18,7 +17,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _countryCode = '+91';
+  final String _countryCode = '+91';
 
   @override
   void dispose() {
@@ -71,9 +70,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
 
                   children: [
-                    // =================================================
-                    // HEADER
-                    // =================================================
                     Text(
                       'Welcome to Heartiqo',
                       style: GoogleFonts.playfairDisplay(
@@ -101,22 +97,18 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                       'We will send you a 4-digit code to verify your account.',
                       style: TextStyle(
                         fontSize: isTablet ? 18 : 16,
-                        color: AppColors.darkPurple.withOpacity(0.72),
+                        color: AppColors.darkPurple.withValues(alpha: 0.72),
                         height: 1.55,
                       ),
                     ),
 
                     const SizedBox(height: 30),
 
-                    // =================================================
-                    // PHONE FORM
-                    // =================================================
                     Form(
                       key: _formKey,
                       child: TextFormField(
                         controller: _phoneController,
 
-                        // Use number keyboard.
                         keyboardType: TextInputType.number,
 
                         textInputAction: TextInputAction.done,
@@ -130,7 +122,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                         cursorColor: AppColors.darkPurple,
 
-                        // Keep validation from appearing immediately.
                         autovalidateMode: AutovalidateMode.onUserInteraction,
 
                         decoration: InputDecoration(
@@ -140,7 +131,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           hintText: 'Enter mobile number',
 
                           hintStyle: TextStyle(
-                            color: AppColors.darkPurple.withOpacity(0.35),
+                            color: AppColors.darkPurple.withValues(alpha: 0.35),
                             fontSize: isTablet ? 18 : 16,
                             fontWeight: FontWeight.w400,
                           ),
@@ -159,7 +150,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                                 Text(
                                   _countryCode,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: AppColors.darkPurple,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
@@ -171,7 +162,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 Icon(
                                   Icons.keyboard_arrow_down_rounded,
                                   size: 20,
-                                  color: AppColors.darkPurple.withOpacity(0.55),
+                                  color: AppColors.darkPurple.withValues(alpha: 0.55),
                                 ),
 
                                 const SizedBox(width: 8),
@@ -179,7 +170,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 Container(
                                   width: 1,
                                   height: 28,
-                                  color: AppColors.darkPurple.withOpacity(0.12),
+                                  color: AppColors.darkPurple.withValues(alpha: 0.12),
                                 ),
                               ],
                             ),
@@ -193,19 +184,19 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(18),
                             borderSide: BorderSide(
-                              color: AppColors.darkPurple.withOpacity(0.10),
+                              color: AppColors.darkPurple.withValues(alpha: 0.10),
                             ),
                           ),
 
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(18),
                             borderSide: BorderSide(
-                              color: AppColors.darkPurple.withOpacity(0.10),
+                              color: AppColors.darkPurple.withValues(alpha: 0.10),
                             ),
                           ),
 
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(18)),
                             borderSide: BorderSide(
                               color: AppColors.darkPurple,
                               width: 1.5,
@@ -215,14 +206,14 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(18),
                             borderSide: BorderSide(
-                              color: Colors.red.withOpacity(0.65),
+                              color: Colors.red.withValues(alpha: 0.65),
                             ),
                           ),
 
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(18),
                             borderSide: BorderSide(
-                              color: Colors.red.withOpacity(0.70),
+                              color: Colors.red.withValues(alpha: 0.70),
                               width: 1.5,
                             ),
                           ),
@@ -260,9 +251,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                     const SizedBox(height: 24),
 
-                    // =================================================
-                    // CONTINUE BUTTON
-                    // =================================================
                     AuthPrimaryButton(
                       label: 'Continue',
                       icon: Icons.arrow_forward,
@@ -272,9 +260,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                     const SizedBox(height: 20),
 
-                    // =================================================
-                    // SMALL PRIVACY MESSAGE
-                    // =================================================
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
@@ -282,7 +267,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                         'and Privacy Policy.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: AppColors.darkPurple.withOpacity(0.48),
+                          color: AppColors.darkPurple.withValues(alpha: 0.48),
                           fontSize: 12,
                           height: 1.4,
                         ),

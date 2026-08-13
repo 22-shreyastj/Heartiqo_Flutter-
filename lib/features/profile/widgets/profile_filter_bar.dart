@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/app_colors.dart';
+import '../../../app/app_colors.dart';
 
 class ProfileFilterBar extends StatelessWidget {
   final int selectedIndex;
@@ -93,7 +93,7 @@ class _FilterItem extends StatelessWidget {
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: AppColors.deepPink.withOpacity(.15),
+                    color: AppColors.deepPink.withValues(alpha: .15),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
