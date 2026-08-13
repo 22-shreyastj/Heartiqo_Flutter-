@@ -8,6 +8,7 @@ import '../model/profile_model.dart';
 import '../widgets/profile_action_buttons.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/profile_filter_bar.dart';
+import '../../discover/view/discover_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -163,7 +164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _onDiscover() {
-    // TODO: Open discover
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const DiscoverScreen()),
+    );
   }
 
   void _onNavigationChanged(int index) {
@@ -171,11 +174,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _currentNavIndex = index;
     });
 
-    // TODO:
-    // 0 -> Home
-    // 1 -> Discover
-    // 2 -> Messages
-    // 3 -> Alerts
-    // 4 -> Profile
+    if (index == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const DiscoverScreen()),
+      );
+    }
   }
 }
