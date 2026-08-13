@@ -93,7 +93,7 @@ class _FilterItem extends StatelessWidget {
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: AppColors.deepPink.withOpacity(.15),
+                    color: AppColors.deepPink.withValues(alpha: .15),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
