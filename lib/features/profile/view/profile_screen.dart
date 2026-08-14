@@ -10,6 +10,7 @@ import '../model/profile_model.dart';
 import '../widgets/profile_action_buttons.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/profile_filter_bar.dart';
+import '../../discover/view/discover_screen.dart';
 
 typedef HomePage = ProfileScreen;
 
@@ -185,21 +186,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _onDiscover() {
-    // TODO: Open discover
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const DiscoverScreen()),
+    );
   }
 
-  void _onNavigationChanged(int index) {
-    setState(() {
-      _currentNavIndex = index;
-    });
+ void _onNavigationChanged(int index) {
+  setState(() {
+    _currentNavIndex = index;
+  });
 
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ChatListPage(),
-        ),
-      );
-    }
+  if (index == 1) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const DiscoverScreen(),
+      ),
+    );
+  } else if (index == 2) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ChatListPage(),
+      ),
+    );
   }
+}
 }
