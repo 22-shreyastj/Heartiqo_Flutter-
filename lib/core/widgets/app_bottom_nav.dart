@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../app/app_colors.dart';
 
 class AppBottomNav extends StatelessWidget {
@@ -17,42 +16,51 @@ class AppBottomNav extends StatelessWidget {
     return Container(
       height: 78,
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFF8F8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _NavItem(
+          _navItem(
             index: 0,
             icon: Icons.home_outlined,
             label: 'Home',
             selected: currentIndex == 0,
           ),
-
-          _NavItem(
+          _navItem(
             index: 1,
             icon: Icons.explore_outlined,
             label: 'Discover',
             selected: currentIndex == 1,
           ),
-
-          _NavItem(
+          _navItem(
             index: 2,
             icon: Icons.chat_bubble_outline_rounded,
             label: 'Messages',
             selected: currentIndex == 2,
             notification: true,
           ),
-
-          _NavItem(
+          _navItem(
             index: 3,
             icon: Icons.notifications_none_rounded,
             label: 'Alerts',
             selected: currentIndex == 3,
           ),
-
-          _NavItem(
+          _navItem(
             index: 4,
             icon: Icons.person_outline_rounded,
             label: 'Profile',
@@ -63,7 +71,7 @@ class AppBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _NavItem({
+  Widget _navItem({
     required int index,
     required IconData icon,
     required String label,
@@ -86,7 +94,7 @@ class AppBottomNav extends StatelessWidget {
                   height: selected ? 38 : 30,
                   decoration: BoxDecoration(
                     color: selected
-                        ? AppColors.deepPink
+                        ? AppColors.primary
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(13),
                   ),
@@ -95,10 +103,9 @@ class AppBottomNav extends StatelessWidget {
                     size: 21,
                     color: selected
                         ? Colors.white
-                        : AppColors.darkPurple,
+                        : const Color(0xFF6B7280),
                   ),
                 ),
-
                 if (notification)
                   Positioned(
                     right: -1,
@@ -107,26 +114,21 @@ class AppBottomNav extends StatelessWidget {
                       width: 7,
                       height: 7,
                       decoration: const BoxDecoration(
-                        color: AppColors.deepPink,
+                        color: AppColors.emotionalAccent,
                         shape: BoxShape.circle,
                       ),
                     ),
                   ),
               ],
             ),
-
             const SizedBox(height: 3),
-
             Text(
               label,
               maxLines: 1,
               style: TextStyle(
                 fontSize: 10.5,
-                fontWeight:
-                    selected ? FontWeight.w600 : FontWeight.w500,
-                color: selected
-                    ? AppColors.deepPink
-                    : AppColors.darkPurple,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                color: selected ? AppColors.primary : const Color(0xFF6B7280),
               ),
             ),
           ],

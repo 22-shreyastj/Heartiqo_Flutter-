@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../add_profile_page.dart';
 import '../../../app/app_colors.dart';
 import '../../../core/widgets/app_bottom_nav.dart';
 import '../../../core/widgets/app_header.dart';
+import '../../chat/view/chat_list_page.dart';
 
 import '../model/profile_model.dart';
 import '../widgets/profile_action_buttons.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/profile_filter_bar.dart';
+
+typedef HomePage = ProfileScreen;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -107,6 +111,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onAddProfile,
+        backgroundColor: AppColors.deepPink,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
     );
   }
 
@@ -146,6 +159,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _onAddProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddProfilePage(),
+      ),
+    );
+  }
+
   void _onSearch() {
     // TODO: Navigate to search
   }
@@ -171,11 +193,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _currentNavIndex = index;
     });
 
-    // TODO:
-    // 0 -> Home
-    // 1 -> Discover
-    // 2 -> Messages
-    // 3 -> Alerts
-    // 4 -> Profile
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ChatListPage(),
+        ),
+      );
+    }
   }
 }
