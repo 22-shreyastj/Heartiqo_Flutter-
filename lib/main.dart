@@ -3,24 +3,22 @@ import 'app/routes.dart';
 import 'features/profile/view/profile_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const HeartiqoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HeartiqoApp extends StatelessWidget {
+  const HeartiqoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HeartIQo',
       debugShowCheckedModeBanner: false,
+      title: 'Heartiqo',
       theme: ThemeData(
         primarySwatch: Colors.purple,
-        useMaterial3: true,
-        fontFamily: 'Roboto',
+        useMaterial3: false,
       ),
-      routes: AppRoutes.routes,
-      home: const ProfileScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }

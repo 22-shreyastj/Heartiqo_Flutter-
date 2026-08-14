@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 
+import '../../../add_profile_page.dart';
 import '../../../app/app_colors.dart';
 import '../../../core/widgets/app_bottom_nav.dart';
+import '../../../core/widgets/app_header.dart';
+import '../../chat/view/chat_list_page.dart';
 import '../controller/profile_controller.dart';
 import '../model/profile_model.dart';
 import '../widgets/profile_settings_list.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_upgrade_banner.dart';
+import '../../discover/view/discover_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool isEmbedded;
+  final VoidCallback? onNotificationTap;
+
+  const ProfileScreen({
+    super.key,
+    this.isEmbedded = false,
+    this.onNotificationTap,
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -34,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     _controller.removeListener(_onProfileUpdated);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -46,8 +58,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top Bar
-            _buildTopBar(context),
+            // Shared App Header
+            AppHeader(
+              avatarImage: profile.avatarUrl,
+              location: 'Hyderabad',
+              onSearch: _onSearch,
+              onNotification:
+                  widget.onNotificationTap ?? _onNotification,
+            ),
 
             Expanded(
               child: SingleChildScrollView(
@@ -62,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     const SizedBox(height: 24),
 
-                    // Stats Row Card (Likes, Matches, Views)
+                    // Stats Row Card
                     ProfileStatsCard(
                       likes: '${profile.likesCount}',
                       matches: '${profile.matchesCount}',
@@ -84,7 +102,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Settings Options List
                     ProfileSettingsList(
                       onAccountTap: _onAccountTap,
-                      onDiscoverySettingsTap: _onDiscoverySettingsTap,
+                      onDiscoverySettingsTap:
+                          _onDiscoverySettingsTap,
                       onSafetyTap: _onSafetyTap,
                       onHelpTap: _onHelpTap,
                     ),
@@ -100,81 +119,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            // Bottom Navigation Bar
-            AppBottomNav(
-              currentIndex: _currentNavIndex,
-              onItemSelected: _onNavigationChanged,
-            ),
+            // Shared Bottom Navigation
+            if (!widget.isEmbedded)
+              AppBottomNav(
+                currentIndex: _currentNavIndex,
+                onItemSelected: _onNavigationChanged,
+              ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onAddProfile,
+        backgroundColor: AppColors.deepPink,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 28,
         ),
       ),
     );
   }
 
-  Widget _buildTopBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(width: 36), // Alignment balance placeholder
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 24,
-                height: 24,
-                decoration: const BoxDecoration(
-                  color: AppColors.brandPink,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.favorite_rounded,
-                  size: 14,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'Heartiqo',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.brandPink,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
-          ),
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No new notifications')),
-              );
-            },
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.borderLight,
-                  width: 1,
-                ),
-              ),
-              child: const Icon(
-                Icons.notifications_none_rounded,
-                size: 20,
-                color: AppColors.textDark,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAvatarSection(BuildContext context, ProfileModel profile) {
+  Widget _buildAvatarSection(
+    BuildContext context,
+    ProfileModel profile,
+  ) {
     return Column(
       children: [
         Stack(
@@ -214,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : null,
             ),
 
-            // Edit Pencil Floating Action Button
+            // Edit Pencil
             Positioned(
               bottom: 2,
               right: 2,
@@ -232,7 +201,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.brandPink.withValues(alpha: 0.4),
+                        color: AppColors.brandPink.withValues(
+                          alpha: 0.4,
+                        ),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),
@@ -263,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const SizedBox(height: 4),
 
-        // Occupation / Subtitle
+        // Occupation
         Text(
           profile.occupation,
           style: const TextStyle(
@@ -324,42 +295,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _onAddProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddProfilePage(),
+      ),
+    );
+  }
+
+  void _onSearch() {
+    // TODO: Navigate to search
+  }
+
+  void _onNotification() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('No new notifications'),
+      ),
+    );
+  }
+
   void _navigateToEditProfile() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditProfileScreen(controller: _controller),
+        builder: (context) => EditProfileScreen(
+          controller: _controller,
+        ),
       ),
     );
   }
 
   void _onUpgrade() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Opening Premium Upgrade...')),
+      const SnackBar(
+        content: Text('Opening Premium Upgrade...'),
+      ),
     );
   }
 
   void _onAccountTap() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Account settings tapped')),
+      const SnackBar(
+        content: Text('Account settings tapped'),
+      ),
     );
   }
 
   void _onDiscoverySettingsTap() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Discovery settings tapped')),
+      const SnackBar(
+        content: Text('Discovery settings tapped'),
+      ),
     );
   }
 
   void _onSafetyTap() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Safety center tapped')),
+      const SnackBar(
+        content: Text('Safety center tapped'),
+      ),
     );
   }
 
   void _onHelpTap() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Help & support tapped')),
+      const SnackBar(
+        content: Text('Help & support tapped'),
+      ),
     );
   }
 
@@ -367,19 +371,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         title: const Text('Logout'),
-        content: const Text('Are you sure you want to log out of Heartiqo?'),
+        content: const Text(
+          'Are you sure you want to log out of Heartiqo?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textMuted)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                color: AppColors.textMuted,
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
+
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Logged out successfully')),
+                const SnackBar(
+                  content: Text('Logged out successfully'),
+                ),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -399,5 +415,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _currentNavIndex = index;
     });
+
+    if (index == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const DiscoverScreen(),
+        ),
+      );
+    } else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ChatListPage(),
+        ),
+      );
+    }
   }
 }

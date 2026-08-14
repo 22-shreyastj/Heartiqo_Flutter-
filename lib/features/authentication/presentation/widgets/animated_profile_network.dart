@@ -295,7 +295,9 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
             ? Image.asset(
                 widget.centerImageAsset!,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+
+                errorBuilder: (_, _, _) {
+
                   return _centerPlaceholder(size);
                 },
               )

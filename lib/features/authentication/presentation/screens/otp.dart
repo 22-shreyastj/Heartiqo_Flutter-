@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/app_colors.dart';
-import '../../../profile/view/profile_screen.dart';
+
+import '../../../../pages/main_navigation_page.dart';
+
 import '../widgets/otp_code_input.dart';
 import '../widgets/otp_numeric_keypad.dart';
 
@@ -84,10 +86,12 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void _navigateToProfile() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const ProfileScreen()),
-    );
-  }
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(
+      builder: (context) => const MainNavigationPage(),
+    ),
+  );
+}
 
   void _editNumber() {
     Navigator.of(context).pop();

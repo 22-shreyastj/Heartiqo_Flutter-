@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../app/app_colors.dart';
+import '../../../../app/app_colors.dart';
 
 class ProfileActionButtons extends StatelessWidget {
   final VoidCallback? onReject;
@@ -24,16 +23,16 @@ class ProfileActionButtons extends StatelessWidget {
           onTap: onReject,
         ),
 
-        const SizedBox(width: 12),
+        const SizedBox(width: 14),
 
         _circleButton(
-          icon: Icons.favorite_border_rounded,
-          backgroundColor: AppColors.deepPink,
+          icon: Icons.favorite_rounded,
+          backgroundColor: AppColors.emotionalAccent,
           iconColor: Colors.white,
           onTap: onLike,
         ),
 
-        const SizedBox(width: 12),
+        const SizedBox(width: 14),
 
         _discoverButton(),
       ],
@@ -44,7 +43,7 @@ class ProfileActionButtons extends StatelessWidget {
     required IconData icon,
     required VoidCallback? onTap,
     Color backgroundColor = Colors.white,
-    Color iconColor = const Color(0xFF75666C),
+    Color iconColor = const Color(0xFF6B7280),
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -55,19 +54,19 @@ class ProfileActionButtons extends StatelessWidget {
           color: backgroundColor,
           shape: BoxShape.circle,
           border: Border.all(
-            color: const Color(0xFFE7D5DA),
+            color: const Color(0xFFE5E7EB),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: .08),
-              blurRadius: 10,
+              color: AppColors.dark.withValues(alpha: 0.08),
+              blurRadius: 12,
               offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Icon(
           icon,
-          size: 29,
+          size: 28,
           color: iconColor,
         ),
       ),
@@ -80,19 +79,18 @@ class ProfileActionButtons extends StatelessWidget {
       child: Container(
         height: 60,
         padding: const EdgeInsets.symmetric(
-          horizontal: 20,
+          horizontal: 22,
         ),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFE50063),
-              Color(0xFF9C0FC8),
-            ],
-          ),
-          borderRadius: BorderRadius.horizontal(
-            right: Radius.circular(30),
-            left: Radius.circular(30),
-          ),
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -102,15 +100,13 @@ class ProfileActionButtons extends StatelessWidget {
               size: 22,
               color: Colors.white,
             ),
-
-            SizedBox(width: 7),
-
+            SizedBox(width: 8),
             Text(
               'DISCOVER',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                letterSpacing: .3,
+                letterSpacing: .5,
                 color: Colors.white,
               ),
             ),

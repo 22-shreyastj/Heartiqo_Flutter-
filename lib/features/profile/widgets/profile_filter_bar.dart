@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/app_colors.dart';
+import '../../../../app/app_colors.dart';
+
 
 class ProfileFilterBar extends StatelessWidget {
   final int selectedIndex;
@@ -15,36 +16,30 @@ class ProfileFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48,
+      height: 44,
       child: ListView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         children: [
-          _FilterItem(
+          _filterItem(
             icon: Icons.tune_rounded,
             iconOnly: true,
             onTap: () {},
           ),
-
           const SizedBox(width: 10),
-
-          _FilterItem(
+          _filterItem(
             label: 'Near Me',
             selected: selectedIndex == 0,
             onTap: () => onSelected?.call(0),
           ),
-
           const SizedBox(width: 8),
-
-          _FilterItem(
+          _filterItem(
             label: 'New Users',
             selected: selectedIndex == 1,
             onTap: () => onSelected?.call(1),
           ),
-
           const SizedBox(width: 8),
-
-          _FilterItem(
+          _filterItem(
             label: 'Verified',
             icon: Icons.verified_rounded,
             selected: selectedIndex == 2,
@@ -54,51 +49,47 @@ class ProfileFilterBar extends StatelessWidget {
       ),
     );
   }
-}
 
-class _FilterItem extends StatelessWidget {
-  final String? label;
-  final IconData? icon;
-  final bool selected;
-  final bool iconOnly;
-  final VoidCallback? onTap;
-
-  const _FilterItem({
-    this.label,
-    this.icon,
-    this.selected = false,
-    this.iconOnly = false,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _filterItem({
+    String? label,
+    IconData? icon,
+    bool selected = false,
+    bool iconOnly = false,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        height: 48,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 44,
         padding: EdgeInsets.symmetric(
           horizontal: iconOnly ? 14 : 18,
         ),
         decoration: BoxDecoration(
-          color: selected
-              ? AppColors.deepPink
-              : const Color(0xFFF9E5E9),
-          borderRadius: BorderRadius.circular(26),
+          color: selected ? AppColors.primary : Colors.white,
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: selected
-                ? AppColors.deepPink
-                : const Color(0xFFE7C9D1),
+            color: selected ? AppColors.primary : const Color(0xFFE5E7EB),
           ),
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: AppColors.deepPink.withValues(alpha: .15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
+
+
+                    color: AppColors.primary.withValues(alpha: 0.25),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+
+
                   ),
                 ]
-              : null,
+              : [
+                  BoxShadow(
+                    color: AppColors.dark.withValues(alpha: 0.03),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -107,23 +98,16 @@ class _FilterItem extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: selected
-                    ? Colors.white
-                    : AppColors.deepPink,
+                color: selected ? Colors.white : AppColors.primary,
               ),
-
-            if (icon != null && label != null)
-              const SizedBox(width: 5),
-
+            if (icon != null && label != null) const SizedBox(width: 6),
             if (label != null)
               Text(
-                label!,
+                label,
                 style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: selected
-                      ? Colors.white
-                      : AppColors.darkPurple,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                  color: selected ? Colors.white : const Color(0xFF4B5563),
                 ),
               ),
           ],
