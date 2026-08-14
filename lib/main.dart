@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HeartIQo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.purple, useMaterial3: false),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        useMaterial3: false,
+      ),
       home: const WelcomeScreen(),
     );
   }

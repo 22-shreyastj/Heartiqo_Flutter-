@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../../add_profile_page.dart';
 import '../../../app/app_colors.dart';
 import '../../../core/widgets/app_bottom_nav.dart';
 import '../../../core/widgets/app_header.dart';
+import '../../chat/view/chat_list_page.dart';
 
 import '../model/profile_model.dart';
 import '../widgets/profile_action_buttons.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/profile_filter_bar.dart';
 import '../../discover/view/discover_screen.dart';
+
+typedef HomePage = ProfileScreen;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -108,6 +112,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onAddProfile,
+        backgroundColor: AppColors.deepPink,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
     );
   }
 
@@ -147,6 +160,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _onAddProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddProfilePage(),
+      ),
+    );
+  }
+
   void _onSearch() {
     // TODO: Navigate to search
   }
@@ -169,15 +191,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _onNavigationChanged(int index) {
-    setState(() {
-      _currentNavIndex = index;
-    });
+ void _onNavigationChanged(int index) {
+  setState(() {
+    _currentNavIndex = index;
+  });
 
-    if (index == 1) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const DiscoverScreen()),
-      );
-    }
+  if (index == 1) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const DiscoverScreen(),
+      ),
+    );
+  } else if (index == 2) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ChatListPage(),
+      ),
+    );
   }
+}
 }

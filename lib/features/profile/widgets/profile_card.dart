@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/app_colors.dart';
 import '../../profile/model/profile_model.dart';
 import 'profile_tag.dart';
 
