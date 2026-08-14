@@ -36,10 +36,8 @@ class ProfileOrbitItem extends StatelessWidget {
                   width: size,
                   height: size,
 
-                  // Makes the photo completely fill the circle.
                   fit: BoxFit.cover,
 
-                  // Keep the center of the person's face visible.
                   alignment: Alignment.center,
 
                   filterQuality: FilterQuality.high,

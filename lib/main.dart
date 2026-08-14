@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'features/authentication/presentation/screens/welcome_screen.dart';
+import 'app/routes.dart';
+import 'features/profile/view/profile_screen.dart';
 
 void main() {
   runApp(const HeartiqoApp());

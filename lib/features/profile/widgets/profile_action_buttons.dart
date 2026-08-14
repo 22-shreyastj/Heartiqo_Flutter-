@@ -58,10 +58,8 @@ class ProfileActionButtons extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-
               color: AppColors.dark.withValues(alpha: 0.08),
               blurRadius: 12,
-
               offset: const Offset(0, 4),
             ),
           ],

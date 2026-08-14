@@ -114,21 +114,21 @@ class AppHeader extends StatelessWidget {
         ),
       ),
       child: ClipOval(
-        child: avatarImage != null && avatarImage!.isNotEmpty
-    ? Image.asset(
-        avatarImage!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(
-            Icons.person,
-            color: AppColors.primary,
-          );
-        },
-      )
-    : const Icon(
-        Icons.person,
-        color: AppColors.primary,
-      ),
-    );
+  child: avatarImage != null && avatarImage!.isNotEmpty
+      ? Image.asset(
+          avatarImage!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(
+              Icons.person,
+              color: AppColors.primary,
+            );
+          },
+        )
+      : const Icon(
+          Icons.person,
+          color: AppColors.primary,
+        ),
+),
   }
 }

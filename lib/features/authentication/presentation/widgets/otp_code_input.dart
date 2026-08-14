@@ -75,8 +75,6 @@ class OtpDigitBox extends StatelessWidget {
       height: 64,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        // Filled → purple
-        // Empty → white
         color: isFilled
             ? AppColors.darkPurple
             : Colors.white,

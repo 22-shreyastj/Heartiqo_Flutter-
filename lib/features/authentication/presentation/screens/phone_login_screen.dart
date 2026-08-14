@@ -70,9 +70,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
 
                   children: [
-                    // =================================================
-                    // HEADER
-                    // =================================================
                     Text(
                       'Welcome to Heartiqo',
                       style: GoogleFonts.playfairDisplay(
@@ -107,15 +104,11 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                     const SizedBox(height: 30),
 
-                    // =================================================
-                    // PHONE FORM
-                    // =================================================
                     Form(
                       key: _formKey,
                       child: TextFormField(
                         controller: _phoneController,
 
-                        // Use number keyboard.
                         keyboardType: TextInputType.number,
 
                         textInputAction: TextInputAction.done,
@@ -129,7 +122,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                         cursorColor: AppColors.darkPurple,
 
-                        // Keep validation from appearing immediately.
                         autovalidateMode: AutovalidateMode.onUserInteraction,
 
                         decoration: InputDecoration(
@@ -158,7 +150,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                                 Text(
                                   _countryCode,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: AppColors.darkPurple,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
@@ -203,8 +195,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             ),
                           ),
 
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(18)),
                             borderSide: BorderSide(
                               color: AppColors.darkPurple,
                               width: 1.5,
@@ -259,9 +251,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                     const SizedBox(height: 24),
 
-                    // =================================================
-                    // CONTINUE BUTTON
-                    // =================================================
                     AuthPrimaryButton(
                       label: 'Continue',
                       icon: Icons.arrow_forward,
@@ -271,9 +260,6 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
                     const SizedBox(height: 20),
 
-                    // =================================================
-                    // SMALL PRIVACY MESSAGE
-                    // =================================================
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
