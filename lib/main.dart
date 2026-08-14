@@ -13,6 +13,10 @@ class HeartiqoApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Heartiqo',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        useMaterial3: false,
+      ),
       home: const WelcomeScreen(),
     );
   }
