@@ -33,7 +33,7 @@ class ProfileCard extends StatelessWidget {
     return Image.asset(
       profile.image,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) {
+      errorBuilder: (_, _, _) {
         return Container(
           color: const Color(0xFFEEDFE1),
           child: const Icon(
@@ -59,8 +59,8 @@ class ProfileCard extends StatelessWidget {
           ],
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(.08),
-            Colors.black.withOpacity(.78),
+            Colors.black.withValues(alpha: .08),
+            Colors.black.withValues(alpha: .78),
           ],
         ),
       ),
@@ -160,7 +160,7 @@ class ProfileCard extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         itemCount: profile.tags.length,
-        separatorBuilder: (_, __) {
+        separatorBuilder: (_, _) {
           return const SizedBox(width: 7);
         },
         itemBuilder: (_, index) {

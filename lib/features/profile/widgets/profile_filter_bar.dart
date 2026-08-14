@@ -72,9 +72,11 @@ class ProfileFilterBar extends StatelessWidget {
           boxShadow: selected
               ? [
                   BoxShadow(
+
                     color: AppColors.primary.withValues(alpha: 0.25),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
+
                   ),
                 ]
               : [

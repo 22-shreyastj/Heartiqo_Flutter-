@@ -15,7 +15,14 @@ import '../../discover/view/discover_screen.dart';
 typedef HomePage = ProfileScreen;
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool isEmbedded;
+  final VoidCallback? onNotificationTap;
+
+  const ProfileScreen({
+    super.key,
+    this.isEmbedded = false,
+    this.onNotificationTap,
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -27,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final ProfileModel _profile = const ProfileModel(
     name: 'Sophia, 26',
-    image: 'assets/images/sophia.jpg',
+    image: 'assets/images/profiles/image1.jpg',
     distance: '4 km away',
     bio:
         'Love travel, music, coffee and discovering new places. Looking for someone to...',
@@ -62,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       avatarImage: _profile.image,
                       location: 'Hyderabad',
                       onSearch: _onSearch,
-                      onNotification: _onNotification,
+                      onNotification: widget.onNotificationTap ?? _onNotification,
                     ),
 
                     const SizedBox(height: 22),
@@ -105,10 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
 
             // SHARED BOTTOM NAVIGATION
-            AppBottomNav(
-              currentIndex: _currentNavIndex,
-              onItemSelected: _onNavigationChanged,
-            ),
+            if (!widget.isEmbedded)
+              AppBottomNav(
+                currentIndex: _currentNavIndex,
+                onItemSelected: _onNavigationChanged,
+              ),
           ],
         ),
       ),

@@ -156,7 +156,7 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: AppColors.magenta.withOpacity(0.17),
+          color: AppColors.magenta.withValues(alpha: 0.17),
           width: 4,
         ),
       ),
@@ -174,7 +174,7 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: AppColors.magenta.withOpacity(0.055),
+          color: AppColors.magenta.withValues(alpha: 0.055),
           width: 2,
         ),
       ),
@@ -350,10 +350,10 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: const Color(0xFF3B3940),
-        border: Border.all(color: Colors.white.withOpacity(0.70), width: 2),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.70), width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 14,
             offset: const Offset(0, 5),
           ),
@@ -365,7 +365,7 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
             ? Image.asset(
                 widget.centerImageAsset!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
+                errorBuilder: (_, _, _) {
                   return _centerPlaceholder(size);
                 },
               )
@@ -438,13 +438,13 @@ class _SmallOrbitIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.30),
+        color: Colors.white.withValues(alpha: 0.30),
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
         size: size * 0.55,
-        color: AppColors.magenta.withOpacity(0.70),
+        color: AppColors.magenta.withValues(alpha: 0.70),
       ),
     );
   }
