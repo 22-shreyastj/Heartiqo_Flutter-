@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app/app_colors.dart';
+import 'features/profile/data/sample_profiles.dart';
 import 'features/profile/model/profile_model.dart';
 import 'profile_details_page.dart';
 
@@ -22,56 +23,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     'New Users',
   ];
 
-  final List<ProfileModel> _nearbyProfiles = const [
-    ProfileModel(
-      name: 'Sophia, 26',
-      image: 'assets/images/profiles/image1.jpg',
-      distance: '4 km away',
-      bio: 'Love travel, music, coffee and discovering new places.',
-      tags: ['Travel', 'Music', 'Coffee'],
-      verified: true,
-    ),
-    ProfileModel(
-      name: 'Emma, 24',
-      image: 'assets/images/profiles/image2.avif',
-      distance: '2 km away',
-      bio: 'Fitness enthusiast, dog lover, and weekend baker.',
-      tags: ['Fitness', 'Baking', 'Books'],
-      verified: true,
-    ),
-    ProfileModel(
-      name: 'Olivia, 25',
-      image: 'assets/images/profiles/image3.avif',
-      distance: '5 km away',
-      bio: 'Art director by day, indie film buff by night.',
-      tags: ['Art', 'Movies', 'Wine'],
-      verified: false,
-    ),
-    ProfileModel(
-      name: 'Isabella, 27',
-      image: 'assets/images/profiles/image4.webp',
-      distance: '3 km away',
-      bio: 'Software developer who loves hiking and board games.',
-      tags: ['Tech', 'Hiking', 'Gaming'],
-      verified: true,
-    ),
-    ProfileModel(
-      name: 'Ava, 23',
-      image: 'assets/images/profiles/image1.jpg',
-      distance: '6 km away',
-      bio: 'Fashion enthusiast and food blogger exploring the city.',
-      tags: ['Fashion', 'Foodie', 'Vlog'],
-      verified: false,
-    ),
-    ProfileModel(
-      name: 'Mia, 25',
-      image: 'assets/images/profiles/image2.avif',
-      distance: '1 km away',
-      bio: 'Yoga instructor loving nature walks and acoustic music.',
-      tags: ['Yoga', 'Nature', 'Music'],
-      verified: true,
-    ),
-  ];
+  final List<ProfileModel> _nearbyProfiles = sampleProfiles;
 
   @override
   void dispose() {

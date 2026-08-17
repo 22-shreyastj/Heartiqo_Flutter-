@@ -59,8 +59,8 @@ class ProfileCard extends StatelessWidget {
           ],
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(.08),
-            Colors.black.withOpacity(.78),
+            Colors.black.withValues(alpha: .08),
+            Colors.black.withValues(alpha: .78),
           ],
         ),
       ),
@@ -81,7 +81,11 @@ class ProfileCard extends StatelessWidget {
 
           _buildDistance(),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
+
+          _buildMatchCompatibility(),
+
+          const SizedBox(height: 10),
 
           Text(
             profile.bio,
@@ -97,6 +101,39 @@ class ProfileCard extends StatelessWidget {
           const SizedBox(height: 13),
 
           _buildTags(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMatchCompatibility() {
+    if (profile.matchPercentage.isEmpty) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.25),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.auto_awesome,
+            size: 13,
+            color: Color(0xFFFFD700),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            '${profile.matchPercentage} Match',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
     );
@@ -163,7 +200,7 @@ class ProfileCard extends StatelessWidget {
         separatorBuilder: (_, __) {
           return const SizedBox(width: 7);
         },
-        itemBuilder: (_, index) {
+        itemBuilder: (context, index) {
           return ProfileTag(
             label: profile.tags[index],
             index: index,

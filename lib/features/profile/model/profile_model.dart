@@ -5,6 +5,8 @@ class ProfileModel {
   final String bio;
   final List<String> tags;
   final bool verified;
+  final String matchPercentage;
+  final String matchReason;
 
   const ProfileModel({
     required this.name,
@@ -13,5 +15,7 @@ class ProfileModel {
     required this.bio,
     required this.tags,
     this.verified = false,
+    this.matchPercentage = '96%',
+    this.matchReason = 'You both love Travel & Music!',
   });
 }
