@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bottom_nav.dart';
-import '../../profile/view/profile_screen.dart';
+import '../../../pages/main_navigation_page.dart';
 import '../controller/discover_controller.dart';
 import '../widgets/discover_filter_bar.dart';
 import '../widgets/discover_header.dart';
@@ -55,9 +56,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         ),
                       ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 14),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 14)),
 
                       // Filter Bar
                       SliverToBoxAdapter(
@@ -67,9 +66,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         ),
                       ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 18),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 18)),
 
                       // View Toggle (Grid / Map)
                       SliverToBoxAdapter(
@@ -79,9 +76,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         ),
                       ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 16),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
                       // Main Content: Grid vs Map
                       if (_controller.isGridView)
@@ -91,28 +86,28 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             vertical: 4,
                           ),
                           sliver: SliverGrid(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final profile = _controller.profiles[index];
-                                return DiscoverProfileCard(
-                                  profile: profile,
-                                  onFavoriteTap: () {
-                                    _controller.toggleFavorite(profile.id);
-                                  },
-                                  onTap: () {
-                                    // Navigate to profile detail if needed
-                                  },
-                                );
-                              },
-                              childCount: _controller.profiles.length,
-                            ),
+                            delegate: SliverChildBuilderDelegate((
+                              context,
+                              index,
+                            ) {
+                              final profile = _controller.profiles[index];
+                              return DiscoverProfileCard(
+                                profile: profile,
+                                onFavoriteTap: () {
+                                  _controller.toggleFavorite(profile.id);
+                                },
+                                onTap: () {
+                                  // Navigate to profile detail if needed
+                                },
+                              );
+                            }, childCount: _controller.profiles.length),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 14,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.68,
-                            ),
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 14,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 0.68,
+                                ),
                           ),
                         )
                       else
@@ -121,33 +116,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           child: _MapViewPlaceholder(),
                         ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 20),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 20)),
                     ],
                   ),
                 ),
 
-                // Reused App Bottom Navigation Bar
-                AppBottomNav(
-                  currentIndex: _currentNavIndex,
-                  onItemSelected: (index) {
-                    setState(() {
-                      _currentNavIndex = index;
-                    });
-                    if (index == 4 || index == 0) {
-                      if (Navigator.of(context).canPop()) {
-                        Navigator.of(context).pop();
-                      } else {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                ),
               ],
             );
           },
@@ -166,11 +139,7 @@ class _MapViewPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Icon(
-            Icons.map_rounded,
-            size: 54,
-            color: Color(0xFFC41C70),
-          ),
+          Icon(Icons.map_rounded, size: 54, color: Color(0xFFC41C70)),
           SizedBox(height: 12),
           Text(
             'Map View',
@@ -183,10 +152,7 @@ class _MapViewPlaceholder extends StatelessWidget {
           SizedBox(height: 4),
           Text(
             'Discover nearby matches on interactive map',
-            style: TextStyle(
-              fontSize: 13.5,
-              color: Color(0xFF7A5A66),
-            ),
+            style: TextStyle(fontSize: 13.5, color: Color(0xFF7A5A66)),
           ),
         ],
       ),

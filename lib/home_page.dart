@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'app/app_colors.dart';
 import 'core/widgets/app_bottom_nav.dart';
 import 'core/widgets/app_header.dart';
 import 'discover_page.dart';
+import 'features/chat/view/chat_list_page.dart';
+import 'features/notifications/view/alerts_page.dart';
 import 'features/profile/model/profile_model.dart';
+import 'features/profile/view/profile_screen.dart';
 import 'features/profile/widgets/profile_action_buttons.dart';
 import 'features/profile/widgets/profile_card.dart';
 import 'features/profile/widgets/profile_filter_bar.dart';
@@ -24,39 +28,51 @@ class _HomePageState extends State<HomePage> {
 
   final List<ProfileModel> _profiles = const [
     ProfileModel(
-      name: 'Sophia, 26',
-      image: 'assets/images/profiles/image1.jpg',
+      name: 'Sophia',
+      age: 26,
+      occupation: 'Travel Creator',
+      avatarUrl: 'assets/images/profiles/image1.jpg',
+      photos: ['assets/images/profiles/image1.jpg'],
       distance: '4 km away',
       bio:
           'Love travel, music, coffee and discovering new places. Looking for someone to explore hidden cafes with!',
-      tags: ['Travel', 'Music', 'Photography', 'Coffee'],
+      selectedInterests: ['Travel', 'Music', 'Photography', 'Coffee'],
       verified: true,
     ),
     ProfileModel(
-      name: 'Emma, 24',
-      image: 'assets/images/profiles/image2.avif',
+      name: 'Emma',
+      age: 24,
+      occupation: 'Fitness Coach',
+      avatarUrl: 'assets/images/profiles/image2.avif',
+      photos: ['assets/images/profiles/image2.avif'],
       distance: '2 km away',
       bio:
           'Fitness enthusiast, dog lover, and weekend baker. Let’s grab boba and talk about books!',
-      tags: ['Fitness', 'Baking', 'Dogs', 'Reading'],
+      selectedInterests: ['Fitness', 'Baking', 'Dogs', 'Reading'],
       verified: true,
     ),
     ProfileModel(
-      name: 'Olivia, 25',
-      image: 'assets/images/profiles/image3.avif',
+      name: 'Olivia',
+      age: 25,
+      occupation: 'Art Director',
+      avatarUrl: 'assets/images/profiles/image3.avif',
+      photos: ['assets/images/profiles/image3.avif'],
       distance: '5 km away',
       bio:
           'Art director by day, indie film buff by night. Always down for live concerts!',
-      tags: ['Art', 'Indie Movies', 'Concerts', 'Wine'],
+      selectedInterests: ['Art', 'Indie Movies', 'Concerts', 'Wine'],
       verified: false,
     ),
     ProfileModel(
-      name: 'Isabella, 27',
-      image: 'assets/images/profiles/image4.webp',
+      name: 'Isabella',
+      age: 27,
+      occupation: 'Software Developer',
+      avatarUrl: 'assets/images/profiles/image4.webp',
+      photos: ['assets/images/profiles/image4.webp'],
       distance: '3 km away',
       bio:
           'Software developer who loves hiking, board games, and sunset photography.',
-      tags: ['Tech', 'Hiking', 'Board Games', 'Sunset'],
+      selectedInterests: ['Tech', 'Hiking', 'Board Games', 'Sunset'],
       verified: true,
     ),
   ];
@@ -87,13 +103,13 @@ class _HomePageState extends State<HomePage> {
           const begin = Offset(0.0, 0.08);
           const end = Offset.zero;
           const curve = Curves.easeOutCubic;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
           return SlideTransition(
             position: animation.drive(tween),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            child: FadeTransition(opacity: animation, child: child),
           );
         },
       ),
@@ -127,12 +143,16 @@ class _HomePageState extends State<HomePage> {
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 350),
-        pageBuilder: (context, animation, secondaryAnimation) => const DiscoverPage(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const DiscoverPage(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOutCubic;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
           return SlideTransition(
             position: animation.drive(tween),
             child: child,
@@ -194,15 +214,19 @@ class _HomePageState extends State<HomePage> {
                       onTap: _navigateToProfileDetails,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: ScaleTransition(
-                              scale: Tween<double>(begin: 0.95, end: 1.0).animate(animation),
-                              child: child,
-                            ),
-                          );
-                        },
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: Tween<double>(
+                                    begin: 0.95,
+                                    end: 1.0,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              );
+                            },
                         child: ProfileCard(
                           key: ValueKey<int>(_currentProfileIndex),
                           profile: _currentProfile,
@@ -223,26 +247,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-            ),
-
-            // Bottom Navigation
-            AppBottomNav(
-              currentIndex: _currentNavIndex,
-              onItemSelected: (index) {
-                setState(() {
-                  _currentNavIndex = index;
-                });
-                if (index == 1) {
-                  _navigateToDiscover();
-                } else if (index == 2 || index == 3 || index == 4) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Navigated to section $index'),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                }
-              },
             ),
           ],
         ),
@@ -266,12 +270,7 @@ class _HomePageState extends State<HomePage> {
                   letterSpacing: -0.5,
                 ),
               ),
-              TextSpan(
-                text: '❤️',
-                style: TextStyle(
-                  fontSize: 26,
-                ),
-              ),
+              TextSpan(text: '❤️', style: TextStyle(fontSize: 26)),
             ],
           ),
         ),

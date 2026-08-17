@@ -30,7 +30,8 @@ class AppHeader extends StatelessWidget {
               Row(
                 children: [
                   ShaderMask(
-                    shaderCallback: (bounds) => AppColors.primaryGradient.createShader(bounds),
+                    shaderCallback: (bounds) =>
+                        AppColors.primaryGradient.createShader(bounds),
                     child: const Text(
                       'Heartiqo',
                       style: TextStyle(
@@ -74,7 +75,11 @@ class AppHeader extends StatelessWidget {
 
         IconButton(
           onPressed: onSearch,
-          icon: const Icon(Icons.search_rounded, size: 25, color: AppColors.dark),
+          icon: const Icon(
+            Icons.search_rounded,
+            size: 25,
+            color: AppColors.dark,
+          ),
         ),
 
         Stack(
@@ -82,7 +87,11 @@ class AppHeader extends StatelessWidget {
           children: [
             IconButton(
               onPressed: onNotification,
-              icon: const Icon(Icons.notifications_none_rounded, size: 25, color: AppColors.dark),
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                size: 25,
+                color: AppColors.dark,
+              ),
             ),
             Positioned(
               right: 8,
@@ -114,21 +123,16 @@ class AppHeader extends StatelessWidget {
         ),
       ),
       child: ClipOval(
-  child: avatarImage != null && avatarImage!.isNotEmpty
-      ? Image.asset(
-          avatarImage!,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(
-              Icons.person,
-              color: AppColors.primary,
-            );
-          },
-        )
-      : const Icon(
-          Icons.person,
-          color: AppColors.primary,
-        ),
-),
+        child: avatarImage != null && avatarImage!.isNotEmpty
+            ? Image.asset(
+                avatarImage!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, color: AppColors.primary);
+                },
+              )
+            : const Icon(Icons.person, color: AppColors.primary),
+      ),
+    );
   }
 }

@@ -4,13 +4,13 @@ import '../../../add_profile_page.dart';
 import '../../../app/app_colors.dart';
 import '../../../core/widgets/app_bottom_nav.dart';
 import '../../../core/widgets/app_header.dart';
+import '../../../pages/main_navigation_page.dart';
 import '../../chat/view/chat_list_page.dart';
 import '../controller/profile_controller.dart';
 import '../model/profile_model.dart';
 import '../widgets/profile_settings_list.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_upgrade_banner.dart';
-import '../../discover/view/discover_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -63,8 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               avatarImage: profile.avatarUrl,
               location: 'Hyderabad',
               onSearch: _onSearch,
-              onNotification:
-                  widget.onNotificationTap ?? _onNotification,
+              onNotification: widget.onNotificationTap ?? _onNotification,
             ),
 
             Expanded(
@@ -93,17 +92,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 20),
 
                     // Premium Upgrade Banner
-                    ProfileUpgradeBanner(
-                      onUpgradeTap: _onUpgrade,
-                    ),
+                    ProfileUpgradeBanner(onUpgradeTap: _onUpgrade),
 
                     const SizedBox(height: 20),
 
                     // Settings Options List
                     ProfileSettingsList(
                       onAccountTap: _onAccountTap,
-                      onDiscoverySettingsTap:
-                          _onDiscoverySettingsTap,
+                      onDiscoverySettingsTap: _onDiscoverySettingsTap,
                       onSafetyTap: _onSafetyTap,
                       onHelpTap: _onHelpTap,
                     ),
@@ -118,32 +114,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-
-            // Shared Bottom Navigation
-            if (!widget.isEmbedded)
-              AppBottomNav(
-                currentIndex: _currentNavIndex,
-                onItemSelected: _onNavigationChanged,
-              ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onAddProfile,
         backgroundColor: AppColors.deepPink,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 28,
-        ),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }
 
-  Widget _buildAvatarSection(
-    BuildContext context,
-    ProfileModel profile,
-  ) {
+  Widget _buildAvatarSection(BuildContext context, ProfileModel profile) {
     return Column(
       children: [
         Stack(
@@ -155,10 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.softPinkSlot,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 4,
-                ),
+                border: Border.all(color: Colors.white, width: 4),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.08),
@@ -195,15 +174,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.brandPink,
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2.5,
-                    ),
+                    border: Border.all(color: Colors.white, width: 2.5),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.brandPink.withValues(
-                          alpha: 0.4,
-                        ),
+                        color: AppColors.brandPink.withValues(alpha: 0.4),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),
@@ -274,11 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.logout_rounded,
-                size: 20,
-                color: AppColors.brandPink,
-              ),
+              Icon(Icons.logout_rounded, size: 20, color: AppColors.brandPink),
               SizedBox(width: 8),
               Text(
                 'Logout',
@@ -298,9 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _onAddProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const AddProfilePage(),
-      ),
+      MaterialPageRoute(builder: (context) => const AddProfilePage()),
     );
   }
 
@@ -309,83 +277,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _onNotification() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('No new notifications'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('No new notifications')));
   }
 
   void _navigateToEditProfile() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditProfileScreen(
-          controller: _controller,
-        ),
+        builder: (context) => EditProfileScreen(controller: _controller),
       ),
     );
   }
 
   void _onUpgrade() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Opening Premium Upgrade...'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Opening Premium Upgrade...')));
   }
 
   void _onAccountTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Account settings tapped'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Account settings tapped')));
   }
 
   void _onDiscoverySettingsTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Discovery settings tapped'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Discovery settings tapped')));
   }
 
   void _onSafetyTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Safety center tapped'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Safety center tapped')));
   }
 
   void _onHelpTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Help & support tapped'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Help & support tapped')));
   }
 
   void _onLogout() {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Logout'),
-        content: const Text(
-          'Are you sure you want to log out of Heartiqo?',
-        ),
+        content: const Text('Are you sure you want to log out of Heartiqo?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text(
               'Cancel',
-              style: TextStyle(
-                color: AppColors.textMuted,
-              ),
+              style: TextStyle(color: AppColors.textMuted),
             ),
           ),
           ElevatedButton(
@@ -393,9 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.pop(ctx);
 
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Logged out successfully'),
-                ),
+                const SnackBar(content: Text('Logged out successfully')),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -416,19 +362,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _currentNavIndex = index;
     });
 
-    if (index == 1) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const DiscoverScreen(),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ChatListPage(),
-        ),
-      );
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainNavigationPage(initialIndex: 0),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainNavigationPage(initialIndex: 1),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainNavigationPage(initialIndex: 2),
+          ),
+        );
+        break;
+      case 3:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainNavigationPage(initialIndex: 3),
+          ),
+        );
+        break;
+      case 4:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainNavigationPage(initialIndex: 4),
+          ),
+        );
+        break;
     }
   }
 }

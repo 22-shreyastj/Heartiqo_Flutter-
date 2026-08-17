@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+
+import '../features/chat/view/chat_list_page.dart';
+import '../features/discover/view/discover_screen.dart';
 import '../features/notifications/view/alerts_page.dart';
 import '../features/profile/view/profile_screen.dart';
+import '../home_page.dart';
 
 class MainNavigationPage extends StatefulWidget {
-  const MainNavigationPage({super.key});
+  final int initialIndex;
+
+  const MainNavigationPage({super.key, this.initialIndex = 0});
 
   @override
   State<MainNavigationPage> createState() => _MainNavigationPageState();
 }
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
-  int _currentIndex = 0; // Default: Home Screen
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
 
   void _onTabSelected(int index) {
     setState(() {
@@ -21,15 +33,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      // Home Page featuring Profile/Match Discovery Feed & interactive notification tap to Alerts tab (Index 3)
-      ProfileScreen(
-        isEmbedded: true,
-        onNotificationTap: () => _onTabSelected(3),
-      ),
-      const Center(child: Text('Discover Page')),
-      const Center(child: Text('Messages Page')),
-      AlertsPage(),
-      const ProfileScreen(isEmbedded: true),
+      const HomePage(),
+      const DiscoverScreen(),
+      const ChatListPage(),
+      const AlertsPage(),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -41,11 +49,26 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         selectedItemColor: const Color(0xFFFF3B70),
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore_outlined), label: 'Discover'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: 'Messages'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications_outlined), label: 'Alerts'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore_outlined),
+            label: 'Discover',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble_outline),
+            label: 'Messages',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_outlined),
+            label: 'Alerts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Profile',
+          ),
         ],
       ),
     );

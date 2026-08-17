@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../controller/signup_controller.dart';
+import '../../controller/social_auth_controller.dart';
 
+import '../widgets/google_account_picker_sheet.dart';
 import '../widgets/signup_header.dart';
 import '../widgets/signup_progress.dart';
 import '../widgets/signup_text_field.dart';
@@ -96,8 +98,20 @@ class _CreateAccountScreenState
     );
   }
 
-  void googleLogin() {
-    showMessage('Google login clicked');
+  Future<void> googleLogin() async {
+    await SocialAuthController().initialize();
+    if (!mounted) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => GoogleAccountPickerSheet(
+        onContinue: () async {
+          await SocialAuthController().googleLogin(context);
+        },
+      ),
+    );
   }
 
   void facebookLogin() {
@@ -304,7 +318,7 @@ class _CreateAccountScreenState
                 // GOOGLE
                 socialButton(
                   icon: Icons.g_mobiledata,
-                  text: 'Continue with Google',
+                  text: 'Continue with Google', 
                   onPressed: googleLogin,
                 ),
 

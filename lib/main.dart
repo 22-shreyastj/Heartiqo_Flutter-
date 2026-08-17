@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'app/routes.dart';
-import 'features/profile/view/profile_screen.dart';
+
+import 'features/authentication/presentation/screens/welcome_screen.dart';
 
 void main() {
   runApp(const HeartiqoApp());
@@ -14,10 +14,7 @@ class HeartiqoApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Heartiqo',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        useMaterial3: false,
-      ),
+      theme: ThemeData(primarySwatch: Colors.purple, useMaterial3: false),
       home: const WelcomeScreen(),
     );
   }
