@@ -8,6 +8,7 @@ class SignupModel {
   String gender;
   String interestedIn;
   String country;
+  String state;
   String city;
 
   SignupModel({
@@ -19,6 +20,7 @@ class SignupModel {
     this.gender = '',
     this.interestedIn = 'Women',
     this.country = '',
+    this.state = '',
     this.city = '',
   });
 }

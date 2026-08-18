@@ -36,6 +36,104 @@ class _CreateAccountScreenState
   bool ageAccepted = false;
   bool termsAccepted = false;
 
+  bool hasSubmitted = false;
+
+  String? fullNameError;
+  String? usernameError;
+  String? emailError;
+  String? passwordError;
+  String? passwordSuccess;
+  String? confirmPasswordError;
+  String? confirmPasswordSuccess;
+
+  bool _isStrongPassword(String password) {
+    if (password.length < 8) return false;
+    if (!password.contains(RegExp(r'[A-Z]'))) return false;
+    if (!password.contains(RegExp(r'[a-z]'))) return false;
+    if (!password.contains(RegExp(r'[0-9]'))) return false;
+    if (!password.contains(RegExp(r'[^a-zA-Z0-9]'))) return false;
+    return true;
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        .hasMatch(email.trim());
+  }
+
+  void _validatePasswordLive() {
+    final text = passwordController.text;
+    if (text.isEmpty) {
+      if (hasSubmitted) {
+        passwordError =
+            'Use 8+ characters with uppercase, lowercase, number & special character';
+      } else {
+        passwordError = null;
+      }
+      passwordSuccess = null;
+    } else if (_isStrongPassword(text)) {
+      passwordError = null;
+      passwordSuccess = 'Strong password';
+    } else {
+      passwordError =
+          'Use 8+ characters with uppercase, lowercase, number & special character';
+      passwordSuccess = null;
+    }
+
+    if (confirmPasswordController.text.isNotEmpty ||
+        (hasSubmitted && confirmPasswordController.text.isEmpty)) {
+      _validateConfirmPasswordLive();
+    }
+  }
+
+  void _validateConfirmPasswordLive() {
+    final text = confirmPasswordController.text;
+    if (text.isEmpty) {
+      if (hasSubmitted) {
+        confirmPasswordError = 'Please confirm your password';
+      } else {
+        confirmPasswordError = null;
+      }
+      confirmPasswordSuccess = null;
+    } else if (text == passwordController.text) {
+      confirmPasswordError = null;
+      confirmPasswordSuccess = 'Passwords match';
+    } else {
+      confirmPasswordError = 'Passwords do not match';
+      confirmPasswordSuccess = null;
+    }
+  }
+
+  void _validateAllFields() {
+    // Full Name
+    if (fullNameController.text.trim().isEmpty) {
+      fullNameError = 'Full name is required';
+    } else {
+      fullNameError = null;
+    }
+
+    // Username
+    if (usernameController.text.trim().isEmpty) {
+      usernameError = 'Username is required';
+    } else {
+      usernameError = null;
+    }
+
+    // Email
+    if (emailController.text.trim().isEmpty) {
+      emailError = 'Email address is required';
+    } else if (!_isValidEmail(emailController.text)) {
+      emailError = 'Enter a valid email address';
+    } else {
+      emailError = null;
+    }
+
+    // Password
+    _validatePasswordLive();
+
+    // Confirm Password
+    _validateConfirmPasswordLive();
+  }
+
   void showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -45,25 +143,18 @@ class _CreateAccountScreenState
   }
 
   void continueSignup() {
-    if (fullNameController.text.isEmpty ||
-        usernameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        confirmPasswordController.text.isEmpty) {
-      showMessage('Please fill all fields');
-      return;
-    }
+    setState(() {
+      hasSubmitted = true;
+      _validateAllFields();
+    });
 
-    if (passwordController.text.length < 8) {
-      showMessage(
-        'Password must contain at least 8 characters',
-      );
-      return;
-    }
-
-    if (passwordController.text !=
-        confirmPasswordController.text) {
-      showMessage('Passwords do not match');
+    if (fullNameError != null ||
+        usernameError != null ||
+        emailError != null ||
+        passwordError != null ||
+        passwordSuccess == null ||
+        confirmPasswordError != null ||
+        confirmPasswordSuccess == null) {
       return;
     }
 
@@ -82,9 +173,9 @@ class _CreateAccountScreenState
     }
 
     widget.controller.saveAccount(
-      fullName: fullNameController.text,
-      username: usernameController.text,
-      email: emailController.text,
+      fullName: fullNameController.text.trim(),
+      username: usernameController.text.trim(),
+      email: emailController.text.trim(),
       password: passwordController.text,
     );
 
@@ -106,6 +197,63 @@ class _CreateAccountScreenState
 
   void instagramLogin() {
     showMessage('Instagram login clicked');
+  }
+
+  Widget _buildPasswordSuffixIcon() {
+    final bool isStrong = _isStrongPassword(passwordController.text);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isStrong)
+          const Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 20,
+            ),
+          ),
+        IconButton(
+          onPressed: () => setState(
+            () => hidePassword = !hidePassword,
+          ),
+          icon: Icon(
+            hidePassword
+                ? Icons.visibility_off
+                : Icons.visibility,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConfirmPasswordSuffixIcon() {
+    final bool isMatch = confirmPasswordController.text.isNotEmpty &&
+        confirmPasswordController.text == passwordController.text;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isMatch)
+          const Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 20,
+            ),
+          ),
+        IconButton(
+          onPressed: () => setState(
+            () => hideConfirmPassword = !hideConfirmPassword,
+          ),
+          icon: Icon(
+            hideConfirmPassword
+                ? Icons.visibility_off
+                : Icons.visibility,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -161,6 +309,16 @@ class _CreateAccountScreenState
                 SignupTextField(
                   hint: 'Full Name',
                   controller: fullNameController,
+                  errorText: fullNameError,
+                  onChanged: (value) {
+                    if (hasSubmitted || fullNameError != null) {
+                      setState(() {
+                        fullNameError = value.trim().isEmpty
+                            ? 'Full name is required'
+                            : null;
+                      });
+                    }
+                  },
                 ),
 
                 const SizedBox(height: 15),
@@ -169,6 +327,16 @@ class _CreateAccountScreenState
                 SignupTextField(
                   hint: 'Username',
                   controller: usernameController,
+                  errorText: usernameError,
+                  onChanged: (value) {
+                    if (hasSubmitted || usernameError != null) {
+                      setState(() {
+                        usernameError = value.trim().isEmpty
+                            ? 'Username is required'
+                            : null;
+                      });
+                    }
+                  },
                 ),
 
                 const SizedBox(height: 15),
@@ -179,6 +347,20 @@ class _CreateAccountScreenState
                   controller: emailController,
                   keyboardType:
                       TextInputType.emailAddress,
+                  errorText: emailError,
+                  onChanged: (value) {
+                    if (hasSubmitted || emailError != null) {
+                      setState(() {
+                        if (value.trim().isEmpty) {
+                          emailError = 'Email address is required';
+                        } else if (!_isValidEmail(value)) {
+                          emailError = 'Enter a valid email address';
+                        } else {
+                          emailError = null;
+                        }
+                      });
+                    }
+                  },
                 ),
 
                 const SizedBox(height: 15),
@@ -187,20 +369,17 @@ class _CreateAccountScreenState
                 SignupTextField(
                   hint: 'Password',
                   helperText:
-                      'Use 8+ characters with uppercase, lowercase, number & symbol',
+                      'Use 8+ characters with uppercase, lowercase, number & special character',
                   controller: passwordController,
                   obscureText: hidePassword,
-                  suffixIcon: IconButton(
-                    onPressed: () => setState(
-                      () => hidePassword =
-                          !hidePassword,
-                    ),
-                    icon: Icon(
-                      hidePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                  ),
+                  errorText: passwordError,
+                  successText: passwordSuccess,
+                  onChanged: (value) {
+                    setState(() {
+                      _validatePasswordLive();
+                    });
+                  },
+                  suffixIcon: _buildPasswordSuffixIcon(),
                 ),
 
                 const SizedBox(height: 10),
@@ -214,17 +393,14 @@ class _CreateAccountScreenState
                       confirmPasswordController,
                   obscureText:
                       hideConfirmPassword,
-                  suffixIcon: IconButton(
-                    onPressed: () => setState(
-                      () => hideConfirmPassword =
-                          !hideConfirmPassword,
-                    ),
-                    icon: Icon(
-                      hideConfirmPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                  ),
+                  errorText: confirmPasswordError,
+                  successText: confirmPasswordSuccess,
+                  onChanged: (value) {
+                    setState(() {
+                      _validateConfirmPasswordLive();
+                    });
+                  },
+                  suffixIcon: _buildConfirmPasswordSuffixIcon(),
                 ),
 
                 const SizedBox(height: 5),

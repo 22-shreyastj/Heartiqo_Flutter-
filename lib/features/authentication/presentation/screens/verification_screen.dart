@@ -53,19 +53,84 @@ class _VerificationScreenState extends State<VerificationScreen> {
     );
   }
 
-  // GOVERNMENT ID CAMERA
+  // GOVERNMENT ID CAMERA / GALLERY
   Future<void> verifyGovernmentId() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
-
-    if (image != null) {
-      setState(() {
-        idImage = File(image.path);
-        governmentIdVerified = true;
-      });
-    }
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Upload Government ID',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Take Photo with Camera'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.camera,
+                      preferredCameraDevice: CameraDevice.rear,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        idImage = File(image.path);
+                        governmentIdVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Camera error: $e');
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        idImage = File(image.path);
+                        governmentIdVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Gallery error: $e');
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  // SELFIE CAMERA
+  // SELFIE CAMERA / GALLERY
   Future<void> verifySelfie() async {
     if (!governmentIdVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -74,17 +139,79 @@ class _VerificationScreenState extends State<VerificationScreen> {
       return;
     }
 
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.camera,
-      preferredCameraDevice: CameraDevice.front,
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Live Selfie Verification',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(
+                  Icons.camera_front_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Take Selfie (Front Camera)'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.camera,
+                      preferredCameraDevice: CameraDevice.front,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        selfieImage = File(image.path);
+                        selfieVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Selfie camera error: $e');
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        selfieImage = File(image.path);
+                        selfieVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Gallery error: $e');
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-
-    if (image != null) {
-      setState(() {
-        selfieImage = File(image.path);
-        selfieVerified = true;
-      });
-    }
   }
 
   // COMPLETE
@@ -180,25 +307,17 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ],
                     ),
 
-                    // EMAIL
-                    const ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Icon(Icons.email_outlined),
-                      title: Text('Email Address'),
-                      trailing: Icon(Icons.check_circle, color: Colors.green),
-                    ),
+                    const SizedBox(height: 14),
 
                     // PINK BOX
-                    Container(
-                      padding: const EdgeInsets.all(15),
-
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFE5EE),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-
-                      child: Column(
-                        children: [
+                    Material(
+                      color: const Color(0xFFFFE5EE),
+                      borderRadius: BorderRadius.circular(15),
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          children: [
                           // GOVERNMENT ID
                           ListTile(
                             contentPadding: EdgeInsets.zero,
@@ -224,16 +343,38 @@ class _VerificationScreenState extends State<VerificationScreen> {
                           ),
 
                           // SHOW ID IMAGE
-                          if (idImage != null)
+                          if (idImage != null) ...[
+                            const SizedBox(height: 8),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.file(
                                 idImage!,
-                                height: 100,
+                                height: 120,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
                               ),
                             ),
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton.icon(
+                                onPressed: verifyGovernmentId,
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  size: 16,
+                                  color: Color(0xFFC00055),
+                                ),
+                                label: const Text(
+                                  'Retake ID Photo',
+                                  style: TextStyle(
+                                    color: Color(0xFFC00055),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
 
                           const SizedBox(height: 10),
 
@@ -256,24 +397,53 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                   : 'Live Selfie & Face Match',
                             ),
 
-                            trailing: const Icon(
-                              Icons.arrow_forward_ios,
-                              size: 17,
-                            ),
+                            trailing: selfieVerified
+                                ? const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                  )
+                                : const Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 17,
+                                  ),
 
                             onTap: verifySelfie,
                           ),
 
                           // SHOW SELFIE
-                          if (selfieImage != null)
-                            ClipOval(
-                              child: Image.file(
-                                selfieImage!,
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.cover,
+                          if (selfieImage != null) ...[
+                            const SizedBox(height: 8),
+                            Center(
+                              child: ClipOval(
+                                child: Image.file(
+                                  selfieImage!,
+                                  height: 110,
+                                  width: 110,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.center,
+                              child: TextButton.icon(
+                                onPressed: verifySelfie,
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  size: 16,
+                                  color: Color(0xFFC00055),
+                                ),
+                                label: const Text(
+                                  'Retake Selfie',
+                                  style: TextStyle(
+                                    color: Color(0xFFC00055),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
 
                           const SizedBox(height: 10),
 
@@ -302,9 +472,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
               const SizedBox(height: 40),
 

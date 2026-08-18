@@ -36,12 +36,14 @@ class SignupController {
     required String gender,
     required String interestedIn,
     required String country,
+    String state = '',
     required String city,
   }) {
     signupModel.dateOfBirth = dateOfBirth;
     signupModel.gender = gender;
     signupModel.interestedIn = interestedIn;
     signupModel.country = country;
+    signupModel.state = state;
     signupModel.city = city;
   }
 }
