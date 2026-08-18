@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'app/app_colors.dart';
 import 'core/widgets/app_bottom_nav.dart';
 import 'core/widgets/app_header.dart';
 import 'discover_page.dart';
+import 'features/chat/view/chat_list_page.dart';
+import 'features/notifications/view/alerts_page.dart';
 import 'features/profile/data/sample_profiles.dart';
 import 'features/profile/model/profile_model.dart';
+import 'features/profile/view/profile_screen.dart';
 import 'features/profile/widgets/profile_action_buttons.dart';
 import 'features/profile/widgets/profile_filter_bar.dart';
 import 'features/profile/widgets/swipeable_profile_card_stack.dart';
@@ -40,12 +44,19 @@ class _HomePageState extends State<HomePage> {
           profiles: _profiles,
           initialIndex: _currentProfileIndex,
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
           const begin = Offset(0.0, 0.08);
           const end = Offset.zero;
           const curve = Curves.easeOutCubic;
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(
+            CurveTween(curve: curve),
+          );
+
           return SlideTransition(
             position: animation.drive(tween),
             child: FadeTransition(
@@ -65,12 +76,19 @@ class _HomePageState extends State<HomePage> {
         transitionDuration: const Duration(milliseconds: 350),
         pageBuilder: (context, animation, secondaryAnimation) =>
             const DiscoverPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOutCubic;
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(
+            CurveTween(curve: curve),
+          );
+
           return SlideTransition(
             position: animation.drive(tween),
             child: child,
@@ -87,17 +105,33 @@ class _HomePageState extends State<HomePage> {
         transitionDuration: const Duration(milliseconds: 350),
         pageBuilder: (context, animation, secondaryAnimation) =>
             const LikeListPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOutCubic;
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(
+            CurveTween(curve: curve),
+          );
+
           return SlideTransition(
             position: animation.drive(tween),
             child: child,
           );
         },
+      ),
+    );
+  }
+
+  void _navigateToNotifications() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AlertsPage(),
       ),
     );
   }
@@ -124,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                       location: 'Hyderabad',
                       onSearch: _navigateToDiscover,
                       onLikes: _navigateToLikes,
-                      onNotification: _navigateToLikes,
+                      onNotification: _navigateToNotifications,
                     ),
 
                     const SizedBox(height: 18),
@@ -162,10 +196,14 @@ class _HomePageState extends State<HomePage> {
 
                     const SizedBox(height: 14),
 
-                    // Action Buttons (Pass/Reject, Like/Heart, Discover)
+                    // Action Buttons
                     ProfileActionButtons(
-                      onReject: () => _cardStackKey.currentState?.swipeLeft(),
-                      onLike: () => _cardStackKey.currentState?.swipeRight(),
+                      onReject: () {
+                        _cardStackKey.currentState?.swipeLeft();
+                      },
+                      onLike: () {
+                        _cardStackKey.currentState?.swipeRight();
+                      },
                       onDiscover: _navigateToDiscover,
                     ),
 
@@ -182,6 +220,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   _currentNavIndex = index;
                 });
+
                 if (index == 1) {
                   _navigateToDiscover();
                 } else if (index == 3) {
@@ -189,7 +228,9 @@ class _HomePageState extends State<HomePage> {
                 } else if (index == 2 || index == 4) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Navigated to section $index'),
+                      content: Text(
+                        'Navigated to section $index',
+                      ),
                       duration: const Duration(seconds: 1),
                     ),
                   );

@@ -5,10 +5,7 @@ import 'features/profile/model/profile_model.dart';
 class MatchSuccessPage extends StatefulWidget {
   final ProfileModel? matchedProfile;
 
-  const MatchSuccessPage({
-    super.key,
-    this.matchedProfile,
-  });
+  const MatchSuccessPage({super.key, this.matchedProfile});
 
   @override
   State<MatchSuccessPage> createState() => _MatchSuccessPageState();
@@ -28,13 +25,15 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
       duration: const Duration(milliseconds: 700),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _controller.forward();
   }
@@ -47,22 +46,24 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
 
   @override
   Widget build(BuildContext context) {
-    final profile = widget.matchedProfile ??
+    final profile =
+        widget.matchedProfile ??
         const ProfileModel(
-          name: 'Sophia, 26',
-          image: 'assets/images/profiles/image1.jpg',
+          name: 'Sophia',
+          age: 26,
+          occupation: 'Travel Creator',
+          avatarUrl: 'assets/images/profiles/image1.jpg',
+          photos: ['assets/images/profiles/image1.jpg'],
           distance: '4 km away',
           bio: 'Love travel, music, coffee and discovering new places.',
-          tags: ['Travel', 'Music', 'Photography'],
+          selectedInterests: ['Travel', 'Music', 'Photography'],
         );
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: AppColors.matchGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.matchGradient),
         child: SafeArea(
           child: Stack(
             children: [
@@ -156,10 +157,15 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
                                   height: 120,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 4),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 4,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.3),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.3,
+                                        ),
                                         blurRadius: 16,
                                         offset: const Offset(0, 6),
                                       ),
@@ -183,10 +189,15 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
                                   height: 120,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 4),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 4,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.3),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.3,
+                                        ),
                                         blurRadius: 16,
                                         offset: const Offset(0, 6),
                                       ),
@@ -196,14 +207,17 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
                                     child: Image.asset(
                                       profile.image,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => Container(
-                                        color: const Color(0xFFF3DDE4),
-                                        child: const Icon(
-                                          Icons.person,
-                                          size: 70,
-                                          color: AppColors.emotionalAccent,
-                                        ),
-                                      ),
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                                color: const Color(0xFFF3DDE4),
+                                                child: const Icon(
+                                                  Icons.person,
+                                                  size: 70,
+                                                  color:
+                                                      AppColors.emotionalAccent,
+                                                ),
+                                              ),
                                     ),
                                   ),
                                 ),
@@ -218,7 +232,9 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.2),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.2,
+                                      ),
                                       blurRadius: 10,
                                     ),
                                   ],
@@ -252,7 +268,10 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
                               );
                               Navigator.pop(context);
                             },
-                            icon: const Icon(Icons.chat_bubble_rounded, color: AppColors.primary),
+                            icon: const Icon(
+                              Icons.chat_bubble_rounded,
+                              color: AppColors.primary,
+                            ),
                             label: const Text(
                               'SEND A MESSAGE',
                               style: TextStyle(
@@ -279,7 +298,10 @@ class _MatchSuccessPageState extends State<MatchSuccessPage>
                             onPressed: () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 56),
-                              side: const BorderSide(color: Colors.white, width: 2),
+                              side: const BorderSide(
+                                color: Colors.white,
+                                width: 2,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),

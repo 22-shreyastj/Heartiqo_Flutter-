@@ -1,146 +1,157 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app/app_colors.dart';
-import 'phone_login_screen.dart';
+import '../../controller/signup_controller.dart';
+import '../../controller/social_auth_controller.dart';
+
 import '../widgets/animated_profile_network.dart';
 import '../widgets/auth_primary_button.dart';
+import '../widgets/google_account_picker_sheet.dart';
 import '../widgets/google_login_button.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+import 'phone_login_screen.dart';
+import 'create_account_screen.dart';
 
-  void _notImplemented(BuildContext context, String action) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('$action not implemented')));
+class WelcomeScreen extends StatefulWidget {
+  final SocialAuthController? authController;
+
+  const WelcomeScreen({
+    super.key,
+    this.authController,
+  });
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  late final SocialAuthController _authController;
+
+  @override
+  void initState() {
+    super.initState();
+    _authController = widget.authController ?? SocialAuthController();
+    _authController.initialize();
+  }
+
+  void _openGooglePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => GoogleAccountPickerSheet(
+        onContinue: () => _authController.googleLogin(context),
+      ),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final screenWidth = constraints.maxWidth;
-              final screenHeight = constraints.maxHeight;
+  Widget build(BuildContext context) => Scaffold(
+    body: Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFFF72B5), Color(0xFF9C27E8)],
+        ),
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
 
-              final isTablet = screenWidth >= 600;
+              // TITLE
+              const Text(
+                'Welcome to Heartiqo',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 38,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF66338C),
+                ),
+              ),
 
-              // Larger orbit for the reference design.
-              final networkMax =
-                  math.min(screenWidth, screenHeight) *
-                  (isTablet ? 0.72 : 0.82);
+              const SizedBox(height: 20),
 
-              return Column(
+              // EXISTING PROFILE NETWORK
+              SizedBox(
+                height: 330,
+                child: AnimatedProfileNetwork(maxSize: 330),
+              ),
+
+              const SizedBox(height: 10),
+
+              const Text(
+                'LOGIN WITH',
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2D103A),
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              // LOGIN WITH PHONE
+              AuthPrimaryButton(
+                label: 'Login with Phone',
+                icon: Icons.phone,
+                animateIcon: false,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PhoneLoginScreen()),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              // GOOGLE LOGIN
+              GoogleLoginButton(
+                label: 'Continue with Google',
+                onTap: () => _openGooglePicker(context),
+              ),
+
+              const SizedBox(height: 22),
+
+              // SIGN UP SECTION
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20),
-
-                  // ------------------------------------------------
-                  // TITLE
-                  // ------------------------------------------------
-                  Text(
-                    'Welcome to Heartiqo',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: isTablet ? 36 : 32,
-                      color: AppColors.darkPurple,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  const Text(
+                    "Don't have an account?",
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(width: 6),
 
-                  // ------------------------------------------------
-                  // ANIMATED PROFILE NETWORK
-                  // ------------------------------------------------
-                  Expanded(
-                    child: Center(
-                      child: AnimatedProfileNetwork(maxSize: networkMax),
+                  TextButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CreateAccountScreen(controller: SignupController()),
+                      ),
                     ),
-                  ),
-
-                  // ------------------------------------------------
-                  // LOGIN SECTION
-                  // ------------------------------------------------
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isTablet ? 80 : 24,
-                      vertical: 12,
-                    ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 500),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'LOGIN WITH',
-                            style: GoogleFonts.playfairDisplay(
-                              fontSize: 28,
-                              color: const Color.fromARGB(255, 42, 30, 51),
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 2,
-                            ),
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          AuthPrimaryButton(
-                            label: 'Login with Phone',
-                            icon: Icons.phone,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PhoneLoginScreen(),
-                                ),
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          GoogleLoginButton(
-                            label: 'Login with Google',
-                            onTap: () =>
-                                _notImplemented(context, 'Google login'),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Don't have an account? ",
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    _notImplemented(context, 'Sign Up'),
-                                child: const Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
-              );
-            },
+              ),
+
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

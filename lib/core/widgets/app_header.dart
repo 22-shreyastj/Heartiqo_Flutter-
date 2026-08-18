@@ -34,7 +34,8 @@ class AppHeader extends StatelessWidget {
               Row(
                 children: [
                   ShaderMask(
-                    shaderCallback: (bounds) => AppColors.primaryGradient.createShader(bounds),
+                    shaderCallback: (bounds) =>
+                        AppColors.primaryGradient.createShader(bounds),
                     child: const Text(
                       'Heartiqo',
                       style: TextStyle(
@@ -76,11 +77,17 @@ class AppHeader extends StatelessWidget {
           ),
         ),
 
+        // Search button
         IconButton(
           onPressed: onSearch,
-          icon: const Icon(Icons.search_rounded, size: 25, color: AppColors.dark),
+          icon: const Icon(
+            Icons.search_rounded,
+            size: 25,
+            color: AppColors.dark,
+          ),
         ),
 
+        // Likes button with count
         ValueListenableBuilder<List<ProfileModel>>(
           valueListenable: LikedProfilesService.instance,
           builder: (context, likedList, child) {
@@ -88,7 +95,7 @@ class AppHeader extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 IconButton(
-                  onPressed: onLikes ?? onNotification,
+                  onPressed: onLikes,
                   icon: const Icon(
                     Icons.favorite_rounded,
                     size: 23,
@@ -124,6 +131,33 @@ class AppHeader extends StatelessWidget {
             );
           },
         ),
+
+        // Notification button with indicator
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            IconButton(
+              onPressed: onNotification,
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                size: 25,
+                color: AppColors.dark,
+              ),
+            ),
+            Positioned(
+              right: 8,
+              top: 8,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: AppColors.emotionalAccent,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -145,10 +179,16 @@ class AppHeader extends StatelessWidget {
                 avatarImage!,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.person, color: AppColors.primary);
+                  return const Icon(
+                    Icons.person,
+                    color: AppColors.primary,
+                  );
                 },
               )
-            : const Icon(Icons.person, color: AppColors.primary),
+            : const Icon(
+                Icons.person,
+                color: AppColors.primary,
+              ),
       ),
     );
   }

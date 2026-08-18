@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
-import 'app/app_colors.dart';
-import 'home_page.dart';
+
+import 'features/authentication/presentation/screens/welcome_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const HeartiqoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HeartiqoApp extends StatelessWidget {
+  const HeartiqoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HeartIQo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.background,
-        fontFamily: 'Roboto',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
-          primary: AppColors.primary,
-          secondary: AppColors.emotionalAccent,
-          tertiary: AppColors.secondaryAccent,
-          surface: AppColors.background,
-          onSurface: AppColors.dark,
-        ),
-      ),
-      home: const HomePage(),
+      title: 'Heartiqo',
+      theme: ThemeData(primarySwatch: Colors.purple, useMaterial3: false),
+      home: const WelcomeScreen(),
     );
   }
 }
