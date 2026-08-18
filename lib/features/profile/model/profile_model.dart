@@ -17,6 +17,8 @@ class ProfileModel {
   final List<String> availableInterests;
   final String distance;
   final bool verified;
+  final String matchPercentage;
+  final String matchReason;
 
   const ProfileModel({
     this.id = '1',
@@ -33,7 +35,11 @@ class ProfileModel {
     this.education = 'University of Design',
     this.gender = 'Woman',
     this.location = 'San Francisco, CA',
-    this.selectedInterests = const ['Art', 'Foodie', 'Travel'],
+    this.selectedInterests = const [
+      'Art',
+      'Foodie',
+      'Travel',
+    ],
     this.availableInterests = const [
       'Fitness',
       'Gaming',
@@ -44,10 +50,15 @@ class ProfileModel {
     ],
     this.distance = '4 km away',
     this.verified = true,
+    this.matchPercentage = '96%',
+    this.matchReason = 'You both love Travel & Music!',
   });
 
-  List<String> get tags => selectedInterests;
+  /// Compatibility getter used by existing UI code.
   String get image => avatarUrl;
+
+  /// Compatibility getter used by existing UI code.
+  List<String> get tags => selectedInterests;
 
   ProfileModel copyWith({
     String? id,
@@ -68,6 +79,8 @@ class ProfileModel {
     List<String>? availableInterests,
     String? distance,
     bool? verified,
+    String? matchPercentage,
+    String? matchReason,
   }) {
     return ProfileModel(
       id: id ?? this.id,
@@ -84,10 +97,15 @@ class ProfileModel {
       education: education ?? this.education,
       gender: gender ?? this.gender,
       location: location ?? this.location,
-      selectedInterests: selectedInterests ?? this.selectedInterests,
-      availableInterests: availableInterests ?? this.availableInterests,
+      selectedInterests:
+          selectedInterests ?? this.selectedInterests,
+      availableInterests:
+          availableInterests ?? this.availableInterests,
       distance: distance ?? this.distance,
       verified: verified ?? this.verified,
+      matchPercentage:
+          matchPercentage ?? this.matchPercentage,
+      matchReason: matchReason ?? this.matchReason,
     );
   }
 }

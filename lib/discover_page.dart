@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app/app_colors.dart';
+import 'features/profile/data/sample_profiles.dart';
 import 'features/profile/model/profile_model.dart';
 import 'profile_details_page.dart';
 
@@ -22,6 +23,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     'New Users',
   ];
 
+  final List<ProfileModel> _nearbyProfiles = sampleProfiles;
   final List<ProfileModel> _nearbyProfiles = const [
     ProfileModel(
       name: 'Sophia',

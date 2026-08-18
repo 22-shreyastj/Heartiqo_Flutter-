@@ -6,12 +6,13 @@ import 'core/widgets/app_header.dart';
 import 'discover_page.dart';
 import 'features/chat/view/chat_list_page.dart';
 import 'features/notifications/view/alerts_page.dart';
+import 'features/profile/data/sample_profiles.dart';
 import 'features/profile/model/profile_model.dart';
 import 'features/profile/view/profile_screen.dart';
 import 'features/profile/widgets/profile_action_buttons.dart';
-import 'features/profile/widgets/profile_card.dart';
 import 'features/profile/widgets/profile_filter_bar.dart';
-import 'match_success_page.dart';
+import 'features/profile/widgets/swipeable_profile_card_stack.dart';
+import 'like_list_page.dart';
 import 'profile_details_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,71 +27,12 @@ class _HomePageState extends State<HomePage> {
   int _currentNavIndex = 0;
   int _currentProfileIndex = 0;
 
-  final List<ProfileModel> _profiles = const [
-    ProfileModel(
-      name: 'Sophia',
-      age: 26,
-      occupation: 'Travel Creator',
-      avatarUrl: 'assets/images/profiles/image1.jpg',
-      photos: ['assets/images/profiles/image1.jpg'],
-      distance: '4 km away',
-      bio:
-          'Love travel, music, coffee and discovering new places. Looking for someone to explore hidden cafes with!',
-      selectedInterests: ['Travel', 'Music', 'Photography', 'Coffee'],
-      verified: true,
-    ),
-    ProfileModel(
-      name: 'Emma',
-      age: 24,
-      occupation: 'Fitness Coach',
-      avatarUrl: 'assets/images/profiles/image2.avif',
-      photos: ['assets/images/profiles/image2.avif'],
-      distance: '2 km away',
-      bio:
-          'Fitness enthusiast, dog lover, and weekend baker. Let’s grab boba and talk about books!',
-      selectedInterests: ['Fitness', 'Baking', 'Dogs', 'Reading'],
-      verified: true,
-    ),
-    ProfileModel(
-      name: 'Olivia',
-      age: 25,
-      occupation: 'Art Director',
-      avatarUrl: 'assets/images/profiles/image3.avif',
-      photos: ['assets/images/profiles/image3.avif'],
-      distance: '5 km away',
-      bio:
-          'Art director by day, indie film buff by night. Always down for live concerts!',
-      selectedInterests: ['Art', 'Indie Movies', 'Concerts', 'Wine'],
-      verified: false,
-    ),
-    ProfileModel(
-      name: 'Isabella',
-      age: 27,
-      occupation: 'Software Developer',
-      avatarUrl: 'assets/images/profiles/image4.webp',
-      photos: ['assets/images/profiles/image4.webp'],
-      distance: '3 km away',
-      bio:
-          'Software developer who loves hiking, board games, and sunset photography.',
-      selectedInterests: ['Tech', 'Hiking', 'Board Games', 'Sunset'],
-      verified: true,
-    ),
-  ];
+  final GlobalKey<SwipeableProfileCardStackState> _cardStackKey =
+      GlobalKey<SwipeableProfileCardStackState>();
+
+  final List<ProfileModel> _profiles = sampleProfiles;
 
   ProfileModel get _currentProfile => _profiles[_currentProfileIndex];
-
-  void _nextProfile() {
-    setState(() {
-      _currentProfileIndex = (_currentProfileIndex + 1) % _profiles.length;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Showing next profile: ${_currentProfile.name}'),
-        duration: const Duration(seconds: 1),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
 
   void _navigateToProfileDetails() {
     Navigator.push(
@@ -98,38 +40,27 @@ class _HomePageState extends State<HomePage> {
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 350),
         pageBuilder: (context, animation, secondaryAnimation) =>
-            ProfileDetailsPage(profile: _currentProfile),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            ProfileDetailsPage(
+          profiles: _profiles,
+          initialIndex: _currentProfileIndex,
+        ),
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
           const begin = Offset(0.0, 0.08);
           const end = Offset.zero;
           const curve = Curves.easeOutCubic;
-          var tween = Tween(
+
+          final tween = Tween(
             begin: begin,
             end: end,
-          ).chain(CurveTween(curve: curve));
+          ).chain(
+            CurveTween(curve: curve),
+          );
+
           return SlideTransition(
             position: animation.drive(tween),
-            child: FadeTransition(opacity: animation, child: child),
-          );
-        },
-      ),
-    );
-  }
-
-  void _navigateToMatchSuccess() {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            MatchSuccessPage(matchedProfile: _currentProfile),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: ScaleTransition(
-              scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-                CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-              ),
+            child: FadeTransition(
+              opacity: animation,
               child: child,
             ),
           );
@@ -145,19 +76,62 @@ class _HomePageState extends State<HomePage> {
         transitionDuration: const Duration(milliseconds: 350),
         pageBuilder: (context, animation, secondaryAnimation) =>
             const DiscoverPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOutCubic;
-          var tween = Tween(
+
+          final tween = Tween(
             begin: begin,
             end: end,
-          ).chain(CurveTween(curve: curve));
+          ).chain(
+            CurveTween(curve: curve),
+          );
+
           return SlideTransition(
             position: animation.drive(tween),
             child: child,
           );
         },
+      ),
+    );
+  }
+
+  void _navigateToLikes() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 350),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const LikeListPage(),
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOutCubic;
+
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+  void _navigateToNotifications() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AlertsPage(),
       ),
     );
   }
@@ -183,11 +157,8 @@ class _HomePageState extends State<HomePage> {
                       avatarImage: _currentProfile.image,
                       location: 'Hyderabad',
                       onSearch: _navigateToDiscover,
-                      onNotification: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No new notifications')),
-                        );
-                      },
+                      onLikes: _navigateToLikes,
+                      onNotification: _navigateToNotifications,
                     ),
 
                     const SizedBox(height: 18),
@@ -209,37 +180,30 @@ class _HomePageState extends State<HomePage> {
 
                     const SizedBox(height: 18),
 
-                    // Animated Profile Card (Tapping opens Profile Details)
-                    GestureDetector(
-                      onTap: _navigateToProfileDetails,
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        transitionBuilder:
-                            (Widget child, Animation<double> animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: ScaleTransition(
-                                  scale: Tween<double>(
-                                    begin: 0.95,
-                                    end: 1.0,
-                                  ).animate(animation),
-                                  child: child,
-                                ),
-                              );
-                            },
-                        child: ProfileCard(
-                          key: ValueKey<int>(_currentProfileIndex),
-                          profile: _currentProfile,
-                        ),
-                      ),
+                    // Swipeable Tinder-Style Profile Card Stack
+                    SwipeableProfileCardStack(
+                      key: _cardStackKey,
+                      profiles: _profiles,
+                      currentIndex: _currentProfileIndex,
+                      onProfileChanged: (newIndex) {
+                        setState(() {
+                          _currentProfileIndex = newIndex;
+                        });
+                      },
+                      onTapCard: _navigateToProfileDetails,
+                      onLike: () {},
                     ),
 
                     const SizedBox(height: 14),
 
-                    // Action Buttons (Reject/Close, Like/Heart, Discover)
+                    // Action Buttons
                     ProfileActionButtons(
-                      onReject: _nextProfile,
-                      onLike: _navigateToMatchSuccess,
+                      onReject: () {
+                        _cardStackKey.currentState?.swipeLeft();
+                      },
+                      onLike: () {
+                        _cardStackKey.currentState?.swipeRight();
+                      },
                       onDiscover: _navigateToDiscover,
                     ),
 
@@ -247,6 +211,31 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+            ),
+
+            // Bottom Navigation
+            AppBottomNav(
+              currentIndex: _currentNavIndex,
+              onItemSelected: (index) {
+                setState(() {
+                  _currentNavIndex = index;
+                });
+
+                if (index == 1) {
+                  _navigateToDiscover();
+                } else if (index == 3) {
+                  _navigateToLikes();
+                } else if (index == 2 || index == 4) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Navigated to section $index',
+                      ),
+                      duration: const Duration(seconds: 1),
+                    ),
+                  );
+                }
+              },
             ),
           ],
         ),
@@ -270,7 +259,12 @@ class _HomePageState extends State<HomePage> {
                   letterSpacing: -0.5,
                 ),
               ),
-              TextSpan(text: '❤️', style: TextStyle(fontSize: 26)),
+              TextSpan(
+                text: '❤️',
+                style: TextStyle(
+                  fontSize: 26,
+                ),
+              ),
             ],
           ),
         ),

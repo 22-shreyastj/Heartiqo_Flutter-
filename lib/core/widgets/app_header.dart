@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../app/app_colors.dart';
+import '../../features/profile/model/profile_model.dart';
+import '../../features/profile/service/liked_profiles_service.dart';
 
 class AppHeader extends StatelessWidget {
   final String? avatarImage;
   final String location;
   final VoidCallback? onSearch;
   final VoidCallback? onNotification;
+  final VoidCallback? onLikes;
 
   const AppHeader({
     super.key,
@@ -13,6 +16,7 @@ class AppHeader extends StatelessWidget {
     this.location = 'Hyderabad',
     this.onSearch,
     this.onNotification,
+    this.onLikes,
   });
 
   @override
@@ -73,6 +77,7 @@ class AppHeader extends StatelessWidget {
           ),
         ),
 
+        // Search button
         IconButton(
           onPressed: onSearch,
           icon: const Icon(
@@ -82,6 +87,52 @@ class AppHeader extends StatelessWidget {
           ),
         ),
 
+        // Likes button with count
+        ValueListenableBuilder<List<ProfileModel>>(
+          valueListenable: LikedProfilesService.instance,
+          builder: (context, likedList, child) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  onPressed: onLikes,
+                  icon: const Icon(
+                    Icons.favorite_rounded,
+                    size: 23,
+                    color: AppColors.emotionalAccent,
+                  ),
+                ),
+                if (likedList.isNotEmpty)
+                  Positioned(
+                    right: 4,
+                    top: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        '${likedList.length}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+
+        // Notification button with indicator
         Stack(
           clipBehavior: Clip.none,
           children: [
@@ -128,10 +179,16 @@ class AppHeader extends StatelessWidget {
                 avatarImage!,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.person, color: AppColors.primary);
+                  return const Icon(
+                    Icons.person,
+                    color: AppColors.primary,
+                  );
                 },
               )
-            : const Icon(Icons.person, color: AppColors.primary),
+            : const Icon(
+                Icons.person,
+                color: AppColors.primary,
+              ),
       ),
     );
   }
