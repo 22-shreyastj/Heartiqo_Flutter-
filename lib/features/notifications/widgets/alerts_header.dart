@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class AlertsHeader extends StatelessWidget {
   final VoidCallback? onNotificationTap;
   final VoidCallback? onSearchTap;
+  final int unreadCount;
 
-  const AlertsHeader({super.key, this.onNotificationTap, this.onSearchTap});
+  const AlertsHeader({
+    super.key,
+    this.onNotificationTap,
+    this.onSearchTap,
+    this.unreadCount = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,18 +57,31 @@ class AlertsHeader extends StatelessWidget {
                     icon: const Icon(Icons.notifications_outlined, color: Color(0xFFFF3B70)),
                     onPressed: onNotificationTap,
                   ),
-                  Positioned(
-                    right: 12,
-                    top: 12,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
+                  if (unreadCount > 0)
+                    Positioned(
+                      right: 10,
+                      top: 10,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFF3B70),
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 14,
+                          minHeight: 14,
+                        ),
+                        child: Text(
+                          '$unreadCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ],
