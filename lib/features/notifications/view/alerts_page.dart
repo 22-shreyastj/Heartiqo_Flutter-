@@ -272,7 +272,6 @@ class _AlertsPageState extends State<AlertsPage> {
       final isDavid = alert.description.toLowerCase().contains('david');
       final name = isDavid ? 'David' : 'Sarah';
       final image = isDavid ? 'assets/images/profiles/image4.webp' : 'assets/images/profiles/image1.jpg';
-      final occupation = isDavid ? 'Photographer' : 'Travel Creator';
       final age = isDavid ? 27 : 24;
 
       Navigator.push(
@@ -280,14 +279,11 @@ class _AlertsPageState extends State<AlertsPage> {
         MaterialPageRoute(
           builder: (context) => MatchSuccessPage(
             matchedProfile: ProfileModel(
-              name: name,
-              age: age,
-              occupation: occupation,
-              avatarUrl: image,
-              photos: [image],
+              name: '$name, $age',
+              image: image,
               distance: '2 km away',
               bio: alert.description,
-              selectedInterests: const ['Travel', 'Music', 'Coffee'],
+              tags: const ['Travel', 'Music', 'Coffee'],
               verified: true,
             ),
           ),
@@ -333,13 +329,10 @@ class _AlertsPageState extends State<AlertsPage> {
           builder: (context) => const ProfileDetailsPage(
             profile: ProfileModel(
               name: 'Emma, 24',
-              age: 24,
-              occupation: 'Fitness Coach',
-              avatarUrl: 'assets/images/profiles/image2.avif',
-              photos: ['assets/images/profiles/image2.avif'],
+              image: 'assets/images/profiles/image2.avif',
               distance: '2 km away',
               bio: 'Fitness enthusiast, dog lover, and weekend baker.',
-              selectedInterests: ['Fitness', 'Baking', 'Books'],
+              tags: ['Fitness', 'Baking', 'Books'],
               verified: true,
             ),
           ),
