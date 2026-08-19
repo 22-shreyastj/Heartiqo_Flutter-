@@ -5,10 +5,12 @@ class SocialAuthService {
   final GoogleSignIn googleSignIn =
       GoogleSignIn.instance;
 
-  Future<void> initializeGoogle() async {
+  Future<void> initializeGoogle({String? serverClientId}) async {
     await googleSignIn.initialize(
       serverClientId:
-          'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+          serverClientId != null && serverClientId.isNotEmpty
+              ? serverClientId
+              : null,
     );
   }
 

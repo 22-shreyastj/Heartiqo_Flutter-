@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app/app_colors.dart';
+import 'features/profile/data/sample_profiles.dart';
 import 'features/profile/model/profile_model.dart';
 import 'profile_details_page.dart';
 
@@ -22,53 +23,72 @@ class _DiscoverPageState extends State<DiscoverPage> {
     'New Users',
   ];
 
+  final List<ProfileModel> _nearbyProfiles = sampleProfiles;
   final List<ProfileModel> _nearbyProfiles = const [
     ProfileModel(
-      name: 'Sophia, 26',
-      image: 'assets/images/profiles/image1.jpg',
+      name: 'Sophia',
+      age: 26,
+      occupation: 'Travel Creator',
+      avatarUrl: 'assets/images/profiles/image1.jpg',
+      photos: ['assets/images/profiles/image1.jpg'],
       distance: '4 km away',
       bio: 'Love travel, music, coffee and discovering new places.',
-      tags: ['Travel', 'Music', 'Coffee'],
+      selectedInterests: ['Travel', 'Music', 'Coffee'],
       verified: true,
     ),
     ProfileModel(
-      name: 'Emma, 24',
-      image: 'assets/images/profiles/image2.avif',
+      name: 'Emma',
+      age: 24,
+      occupation: 'Fitness Coach',
+      avatarUrl: 'assets/images/profiles/image2.avif',
+      photos: ['assets/images/profiles/image2.avif'],
       distance: '2 km away',
       bio: 'Fitness enthusiast, dog lover, and weekend baker.',
-      tags: ['Fitness', 'Baking', 'Books'],
+      selectedInterests: ['Fitness', 'Baking', 'Books'],
       verified: true,
     ),
     ProfileModel(
-      name: 'Olivia, 25',
-      image: 'assets/images/profiles/image3.avif',
+      name: 'Olivia',
+      age: 25,
+      occupation: 'Art Director',
+      avatarUrl: 'assets/images/profiles/image3.avif',
+      photos: ['assets/images/profiles/image3.avif'],
       distance: '5 km away',
       bio: 'Art director by day, indie film buff by night.',
-      tags: ['Art', 'Movies', 'Wine'],
+      selectedInterests: ['Art', 'Movies', 'Wine'],
       verified: false,
     ),
     ProfileModel(
-      name: 'Isabella, 27',
-      image: 'assets/images/profiles/image4.webp',
+      name: 'Isabella',
+      age: 27,
+      occupation: 'Software Developer',
+      avatarUrl: 'assets/images/profiles/image4.webp',
+      photos: ['assets/images/profiles/image4.webp'],
       distance: '3 km away',
       bio: 'Software developer who loves hiking and board games.',
-      tags: ['Tech', 'Hiking', 'Gaming'],
+      selectedInterests: ['Tech', 'Hiking', 'Gaming'],
       verified: true,
     ),
     ProfileModel(
-      name: 'Ava, 23',
-      image: 'assets/images/profiles/image1.jpg',
+      name: 'Ava',
+      age: 23,
+      occupation: 'Fashion Blogger',
+      avatarUrl: 'assets/images/profiles/image1.jpg',
+      photos: ['assets/images/profiles/image1.jpg'],
       distance: '6 km away',
       bio: 'Fashion enthusiast and food blogger exploring the city.',
-      tags: ['Fashion', 'Foodie', 'Vlog'],
+      selectedInterests: ['Fashion', 'Foodie', 'Vlog'],
       verified: false,
     ),
     ProfileModel(
-      name: 'Mia, 25',
-      image: 'assets/images/profiles/image2.avif',
+      name: 'Mia',
+      age: 25,
+      occupation: 'Yoga Instructor',
+      avatarUrl: 'assets/images/profiles/image2.avif',
+      photos: ['assets/images/profiles/image2.avif'],
       distance: '1 km away',
       bio: 'Yoga instructor loving nature walks and acoustic music.',
-      tags: ['Yoga', 'Nature', 'Music'],
+      selectedInterests: ['Yoga', 'Nature', 'Music'],
       verified: true,
     ),
   ];
@@ -116,10 +136,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.tune_rounded,
-              color: AppColors.primary,
-            ),
+            icon: const Icon(Icons.tune_rounded, color: AppColors.primary),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Filter settings opened')),
@@ -151,7 +168,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   controller: _searchController,
                   decoration: const InputDecoration(
                     hintText: 'Search interests, names...',
-                    prefixIcon: Icon(Icons.search_rounded, color: AppColors.primary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: AppColors.primary,
+                    ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16,
@@ -166,7 +186,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
             SizedBox(
               height: 48,
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 6,
+                ),
                 scrollDirection: Axis.horizontal,
                 itemCount: _categories.length,
                 separatorBuilder: (context, index) => const SizedBox(width: 8),
@@ -195,7 +218,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         boxShadow: isSelected
                             ? [
                                 BoxShadow(
-                                  color: AppColors.primary.withValues(alpha: 0.25),
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.25,
+                                  ),
                                   blurRadius: 8,
                                   offset: const Offset(0, 3),
                                 ),
@@ -206,8 +231,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         _categories[index],
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.w600,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w600,
                           color: isSelected
                               ? Colors.white
                               : const Color(0xFF4B5563),
@@ -248,16 +274,24 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           Navigator.push(
                             context,
                             PageRouteBuilder(
-                              transitionDuration: const Duration(milliseconds: 350),
-                              pageBuilder: (context, animation, secondaryAnimation) =>
-                                  ProfileDetailsPage(profile: profile),
+                              transitionDuration: const Duration(
+                                milliseconds: 350,
+                              ),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      ProfileDetailsPage(profile: profile),
                               transitionsBuilder:
-                                  (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
+                                  (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
                             ),
                           );
                         },
@@ -278,10 +312,7 @@ class _DiscoverUserCard extends StatelessWidget {
   final ProfileModel profile;
   final VoidCallback onTap;
 
-  const _DiscoverUserCard({
-    required this.profile,
-    required this.onTap,
-  });
+  const _DiscoverUserCard({required this.profile, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -355,7 +386,10 @@ class _DiscoverUserCard extends StatelessWidget {
                 top: 12,
                 left: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.45),
                     borderRadius: BorderRadius.circular(12),

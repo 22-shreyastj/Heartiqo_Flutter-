@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+
 import 'features/authentication/presentation/screens/welcome_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const HeartiqoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HeartiqoApp extends StatelessWidget {
+  const HeartiqoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HeartIQo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        useMaterial3: false,
-      ),
+      title: 'Heartiqo',
+      theme: ThemeData(primarySwatch: Colors.purple, useMaterial3: false),
       home: const WelcomeScreen(),
     );
   }

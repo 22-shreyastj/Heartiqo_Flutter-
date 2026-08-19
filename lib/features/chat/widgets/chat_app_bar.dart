@@ -156,22 +156,57 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Row(
                 children: [
                   Icon(
-                    isMuted ? Icons.volume_up_outlined : Icons.volume_off_outlined,
+                    isMuted ? Icons.volume_up_outlined : Icons.notifications_off_outlined,
                     size: 20,
                     color: Colors.black87,
                   ),
-                  const SizedBox(width: 10),
-                  Text(isMuted ? 'Unmute notifications' : 'Mute notifications'),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(isMuted ? 'Unmute notifications' : 'Mute notifications'),
+                  ),
+                  const Icon(Icons.arrow_right, size: 20, color: Colors.black54),
+                ],
+              ),
+            ),
+            const PopupMenuDivider(),
+            const PopupMenuItem(
+              value: 'send_call_link',
+              child: Row(
+                children: [
+                  Icon(Icons.link, size: 20, color: Colors.black87),
+                  SizedBox(width: 12),
+                  Text('Send call link'),
                 ],
               ),
             ),
             const PopupMenuItem(
-              value: 'clear',
+              value: 'schedule_call',
               child: Row(
                 children: [
-                  Icon(Icons.delete_outline, size: 20, color: Colors.black87),
-                  SizedBox(width: 10),
-                  Text('Clear chat'),
+                  Icon(Icons.calendar_today_outlined, size: 20, color: Colors.black87),
+                  SizedBox(width: 12),
+                  Text('Schedule call'),
+                ],
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'new_group_call',
+              child: Row(
+                children: [
+                  Icon(Icons.person_add_alt_outlined, size: 20, color: Colors.black87),
+                  SizedBox(width: 12),
+                  Text('New group call'),
+                ],
+              ),
+            ),
+            const PopupMenuDivider(),
+            const PopupMenuItem(
+              value: 'report',
+              child: Row(
+                children: [
+                  Icon(Icons.thumb_down_outlined, size: 20, color: Colors.black87),
+                  SizedBox(width: 12),
+                  Text('Report'),
                 ],
               ),
             ),
@@ -182,25 +217,30 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Icon(
                     isBlocked ? Icons.lock_open : Icons.block,
                     size: 20,
-                    color: isBlocked ? const Color(0xFFD41470) : Colors.redAccent,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    isBlocked ? 'Unblock user' : 'Block user',
-                    style: TextStyle(
-                      color: isBlocked ? const Color(0xFFD41470) : Colors.redAccent,
-                    ),
-                  ),
+                  const SizedBox(width: 12),
+                  Text(isBlocked ? 'Unblock' : 'Block'),
                 ],
               ),
             ),
             const PopupMenuItem(
-              value: 'report',
+              value: 'clear',
               child: Row(
                 children: [
-                  Icon(Icons.flag_outlined, size: 20, color: Colors.redAccent),
-                  SizedBox(width: 10),
-                  Text('Report user', style: TextStyle(color: Colors.redAccent)),
+                  Icon(Icons.remove_circle_outline, size: 20, color: Colors.black87),
+                  SizedBox(width: 12),
+                  Text('Clear chat'),
+                ],
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'delete_chat',
+              child: Row(
+                children: [
+                  Icon(Icons.delete_outline, size: 20, color: Colors.black87),
+                  SizedBox(width: 12),
+                  Text('Delete chat'),
                 ],
               ),
             ),

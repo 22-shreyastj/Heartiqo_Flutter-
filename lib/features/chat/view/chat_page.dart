@@ -72,6 +72,11 @@ class _ChatPageState extends State<ChatPage> {
 
   void _handleOptionSelected(String value) {
     switch (value) {
+      case 'select_messages':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Select messages mode activated')),
+        );
+        break;
       case 'mute':
         _showMuteDurationPicker();
         break;
@@ -81,10 +86,38 @@ class _ChatPageState extends State<ChatPage> {
           const SnackBar(content: Text('Notifications unmuted')),
         );
         break;
-      case 'clear':
-        controller.clearChat(widget.chatId);
+      case 'disappearing_messages':
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Chat history cleared')),
+          const SnackBar(content: Text('Disappearing messages: Off')),
+        );
+        break;
+      case 'add_to_favourites':
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${widget.name} added to favourites')),
+        );
+        break;
+      case 'close_chat':
+        Navigator.of(context).pop();
+        break;
+      case 'send_call_link':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Call link copied to clipboard')),
+        );
+        break;
+      case 'schedule_call':
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Schedule call with ${widget.name}')),
+        );
+        break;
+      case 'new_group_call':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Starting new group call...')),
+        );
+        break;
+      case 'report':
+        controller.service.reportUser(widget.chatId, 'Reported by user');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${widget.name} reported')),
         );
         break;
       case 'block':
@@ -99,10 +132,17 @@ class _ChatPageState extends State<ChatPage> {
           SnackBar(content: Text('${widget.name} unblocked')),
         );
         break;
-      case 'report':
-        controller.service.reportUser(widget.chatId, 'Reported by user');
+      case 'clear':
+        controller.clearChat(widget.chatId);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${widget.name} reported')),
+          const SnackBar(content: Text('Chat history cleared')),
+        );
+        break;
+      case 'delete_chat':
+        controller.clearChat(widget.chatId);
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Chat with ${widget.name} deleted')),
         );
         break;
     }
@@ -231,8 +271,21 @@ class _ChatPageState extends State<ChatPage> {
                               MessageOptionsModal.show(
                                 context,
                                 messageText: message.text,
-                                onDelete: () {
+                                onDeleteForMe: () {
                                   controller.deleteMessage(message.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Message deleted for you'),
+                                    ),
+                                  );
+                                },
+                                onDeleteForEveryone: () {
+                                  controller.deleteMessage(message.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Message deleted for everyone'),
+                                    ),
+                                  );
                                 },
                               );
                             },
