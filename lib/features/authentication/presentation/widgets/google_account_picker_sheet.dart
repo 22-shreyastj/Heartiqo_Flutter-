@@ -55,16 +55,33 @@ class GoogleAccountPickerSheet extends StatelessWidget {
                   color: Color(0xFFFFE5F1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.g_mobiledata,
-                  color: Color(0xFFC00055),
+                child: const Center(
+                  child: Text(
+                    'G',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFC00055),
+                    ),
+                  ),
                 ),
               ),
-              title: const Text('Continue with Google'),
+              title: const Text(
+                'Continue with Google',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               subtitle: const Text('Use your Google account'),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: Colors.grey.shade200,
+                ),
               ),
               tileColor: Colors.grey.shade50,
               onTap: () {
@@ -72,12 +89,20 @@ class GoogleAccountPickerSheet extends StatelessWidget {
                 onContinue();
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
+              height: 48,
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
           ],

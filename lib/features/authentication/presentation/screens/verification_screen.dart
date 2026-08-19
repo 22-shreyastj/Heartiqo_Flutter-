@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../controller/signup_controller.dart';
 
@@ -11,540 +14,480 @@ import 'signup_success_screen.dart';
 class VerificationScreen extends StatefulWidget {
   final SignupController controller;
 
-  const VerificationScreen({
-    super.key,
-    required this.controller,
-  });
+  const VerificationScreen({super.key, required this.controller});
 
   @override
-  State<VerificationScreen> createState() =>
-      _VerificationScreenState();
+  State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _VerificationScreenState
-    extends State<VerificationScreen> {
-
+class _VerificationScreenState extends State<VerificationScreen> {
   bool governmentIdVerified = false;
   bool selfieVerified = false;
 
-  // ==========================================
-  // WHY VERIFY POPUP
-  // ==========================================
+  File? idImage;
+  File? selfieImage;
 
+  final ImagePicker picker = ImagePicker();
+
+  // WHY VERIFY
   void showWhyVerifyDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-
-        title: const Row(
-          children: [
-            Icon(
-              Icons.verified_user_outlined,
-              color: Color(0xFFC00055),
-            ),
-
-            SizedBox(width: 10),
-
-            Expanded(
-              child: Text(
-                'Why verify?',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-
+        title: const Text('Why verify?'),
         content: const Text(
-          'Identity verification helps make Heartiqo '
-          'safer and more trustworthy.\n\n'
-          '✓ Confirms you are a real person\n\n'
-          '✓ Helps prevent fake accounts\n\n'
-          '✓ Creates safer connections\n\n'
-          '✓ Helps protect against impersonation',
-          style: TextStyle(
-            fontSize: 15,
-            height: 1.4,
-          ),
+          'Identity verification helps make Heartiqo safer.\n\n'
+          '✓ Prevents fake accounts\n'
+          '✓ Creates safer connections\n'
+          '✓ Confirms you are a real person',
         ),
-
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'GOT IT',
-              style: TextStyle(
-                color: Color(0xFFC00055),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('GOT IT'),
           ),
         ],
       ),
     );
   }
 
-  // ==========================================
-  // GOVERNMENT ID
-  // ==========================================
-
-  void verifyGovernmentId() {
-    setState(() {
-      governmentIdVerified = true;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Government ID verified successfully',
+  // GOVERNMENT ID CAMERA / GALLERY
+  Future<void> verifyGovernmentId() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Upload Government ID',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Take Photo with Camera'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.camera,
+                      preferredCameraDevice: CameraDevice.rear,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        idImage = File(image.path);
+                        governmentIdVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Camera error: $e');
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        idImage = File(image.path);
+                        governmentIdVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Gallery error: $e');
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ==========================================
-  // SELFIE
-  // ==========================================
-
-  void verifySelfie() {
+  // SELFIE CAMERA / GALLERY
+  Future<void> verifySelfie() async {
     if (!governmentIdVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please verify Government ID first',
-          ),
-        ),
+        const SnackBar(content: Text('Take Government ID photo first')),
       );
-
       return;
     }
 
-    setState(() {
-      selfieVerified = true;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Live selfie verified successfully',
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Live Selfie Verification',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(
+                  Icons.camera_front_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Take Selfie (Front Camera)'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.camera,
+                      preferredCameraDevice: CameraDevice.front,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        selfieImage = File(image.path);
+                        selfieVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Selfie camera error: $e');
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFFC00055),
+                ),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  try {
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        selfieImage = File(image.path);
+                        selfieVerified = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Gallery error: $e');
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ==========================================
-  // COMPLETE VERIFICATION
-  // ==========================================
-
+  // COMPLETE
   void completeVerification() {
-    if (!governmentIdVerified ||
-        !selfieVerified) {
+    if (!governmentIdVerified || !selfieVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please complete all verification steps',
-          ),
-        ),
+        const SnackBar(content: Text('Complete all verification steps')),
       );
-
       return;
     }
 
     widget.controller.nextPage(
       context,
-      SignupSuccessScreen(
-        controller: widget.controller,
-      ),
+      SignupSuccessScreen(controller: widget.controller),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool allVerified =
-        governmentIdVerified && selfieVerified;
+    bool allVerified = governmentIdVerified && selfieVerified;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9F9),
 
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-          ),
+          padding: const EdgeInsets.all(24),
 
           child: Column(
             children: [
-
-              // =====================================
               // HEADER
-              // =====================================
-
               SignupHeader(
-                onBack: () =>
-                    widget.controller.back(context),
+                onBack: () {
+                  widget.controller.back(context);
+                },
               ),
 
               const SignupProgress(step: 5),
 
               const SizedBox(height: 30),
 
-              // =====================================
-              // VERIFICATION ICON
-              // =====================================
-
-              Container(
-                height: 85,
-                width: 85,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFFFFE6EE),
-                ),
-                child: const Icon(
+              // ICON
+              const CircleAvatar(
+                radius: 42,
+                backgroundColor: Color(0xFFFFE6EE),
+                child: Icon(
                   Icons.verified_user,
-                  size: 48,
+                  size: 45,
                   color: Color(0xFFC00055),
                 ),
               ),
 
-              const SizedBox(height: 25),
-
-              // =====================================
-              // TITLE
-              // =====================================
+              const SizedBox(height: 20),
 
               const Text(
                 'Verify Your Identity',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 29,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 30),
 
-              // =====================================
-              // VERIFICATION CARD
-              // =====================================
-
+              // CARD
               Container(
-                width: double.infinity,
-
                 padding: const EdgeInsets.all(20),
 
                 decoration: BoxDecoration(
                   color: Colors.white,
-
-                  borderRadius:
-                      BorderRadius.circular(20),
-
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: 0.05,
-                      ),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(20),
                 ),
 
                 child: Column(
                   children: [
-
-                    // =================================
-                    // VERIFICATION STATUS + WHY VERIFY
-                    // =================================
-
+                    // STATUS + WHY VERIFY
                     Row(
                       children: [
                         const Expanded(
                           child: Text(
                             'Verification Status',
                             style: TextStyle(
-                              fontSize: 19,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
 
                         TextButton(
-                          onPressed:
-                              showWhyVerifyDialog,
-
-                          style: TextButton.styleFrom(
-                            padding:
-                                const EdgeInsets.all(4),
-                          ),
-
-                          child: const Row(
-                            mainAxisSize:
-                                MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Why verify?',
-                                style: TextStyle(
-                                  color:
-                                      Color(0xFFC00055),
-                                  fontSize: 15,
-                                ),
-                              ),
-
-                              SizedBox(width: 4),
-
-                              Icon(
-                                Icons.info_outline,
-                                size: 17,
-                                color:
-                                    Color(0xFFC00055),
-                              ),
-                            ],
+                          onPressed: showWhyVerifyDialog,
+                          child: const Text(
+                            'Why verify?',
+                            style: TextStyle(color: Color(0xFFC00055)),
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 14),
 
-                    // =================================
-                    // EMAIL VERIFIED
-                    // =================================
+                    // PINK BOX
+                    Material(
+                      color: const Color(0xFFFFE5EE),
+                      borderRadius: BorderRadius.circular(15),
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          children: [
+                          // GOVERNMENT ID
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
 
-                    const ListTile(
-                      contentPadding:
-                          EdgeInsets.zero,
+                            leading: const Icon(
+                              Icons.badge_outlined,
+                              color: Color(0xFFC00055),
+                            ),
 
-                      leading: Icon(
-                        Icons.email_outlined,
-                        size: 28,
-                      ),
+                            title: const Text('Government ID'),
 
-                      title: Text(
-                        'Email Address',
-                        style: TextStyle(
-                          fontSize: 17,
-                        ),
-                      ),
+                            trailing: governmentIdVerified
+                                ? const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                  )
+                                : const Icon(
+                                    Icons.camera_alt,
+                                    color: Color(0xFFC00055),
+                                  ),
 
-                      trailing: Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 27,
-                      ),
-                    ),
+                            onTap: verifyGovernmentId,
+                          ),
 
-                    const SizedBox(height: 5),
-
-                    // =================================
-                    // GOVERNMENT ID SECTION
-                    // =================================
-
-                    Container(
-                      width: double.infinity,
-
-                      padding:
-                          const EdgeInsets.all(16),
-
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFFFFE5EE),
-
-                        borderRadius:
-                            BorderRadius.circular(15),
-                      ),
-
-                      child: Column(
-                        children: [
-
-                          // Government ID
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.badge_outlined,
-                                color:
-                                    Color(0xFFC00055),
-                                size: 28,
+                          // SHOW ID IMAGE
+                          if (idImage != null) ...[
+                            const SizedBox(height: 8),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(
+                                idImage!,
+                                height: 120,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
                               ),
-
-                              const SizedBox(width: 12),
-
-                              const Expanded(
-                                child: Text(
-                                  'Government ID',
+                            ),
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton.icon(
+                                onPressed: verifyGovernmentId,
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  size: 16,
+                                  color: Color(0xFFC00055),
+                                ),
+                                label: const Text(
+                                  'Retake ID Photo',
                                   style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight:
-                                        FontWeight.bold,
+                                    color: Color(0xFFC00055),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
+                            ),
+                          ],
 
-                              TextButton(
-                                onPressed:
-                                    governmentIdVerified
-                                        ? null
-                                        : verifyGovernmentId,
+                          const SizedBox(height: 10),
 
-                                child: Text(
-                                  governmentIdVerified
-                                      ? 'Verified'
-                                      : 'Required',
+                          // SELFIE
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
 
-                                  style: TextStyle(
-                                    color:
-                                        governmentIdVerified
-                                            ? Colors.green
-                                            : const Color(
-                                                0xFFC00055,
-                                              ),
-                                    fontWeight:
-                                        FontWeight.w600,
+                            leading: Icon(
+                              selfieVerified
+                                  ? Icons.check_circle
+                                  : Icons.camera_alt_outlined,
+                              color: selfieVerified
+                                  ? Colors.green
+                                  : const Color(0xFFC00055),
+                            ),
+
+                            title: Text(
+                              selfieVerified
+                                  ? 'Live Selfie Verified'
+                                  : 'Live Selfie & Face Match',
+                            ),
+
+                            trailing: selfieVerified
+                                ? const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                  )
+                                : const Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 17,
                                   ),
+
+                            onTap: verifySelfie,
+                          ),
+
+                          // SHOW SELFIE
+                          if (selfieImage != null) ...[
+                            const SizedBox(height: 8),
+                            Center(
+                              child: ClipOval(
+                                child: Image.file(
+                                  selfieImage!,
+                                  height: 110,
+                                  width: 110,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.center,
+                              child: TextButton.icon(
+                                onPressed: verifySelfie,
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  size: 16,
+                                  color: Color(0xFFC00055),
+                                ),
+                                label: const Text(
+                                  'Retake Selfie',
+                                  style: TextStyle(
+                                    color: Color(0xFFC00055),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+
+                          const SizedBox(height: 10),
+
+                          Row(
+                            children: [
+                              Icon(
+                                allVerified
+                                    ? Icons.check_circle
+                                    : Icons.info_outline,
+                                color: allVerified
+                                    ? Colors.green
+                                    : const Color(0xFFC00055),
+                              ),
+
+                              const SizedBox(width: 10),
+
+                              Expanded(
+                                child: Text(
+                                  allVerified
+                                      ? 'Identity verification completed'
+                                      : 'Complete Government ID and selfie verification',
                                 ),
                               ),
                             ],
                           ),
-
-                          const SizedBox(height: 15),
-
-                          // =================================
-                          // SELFIE
-                          // =================================
-
-                          InkWell(
-                            onTap: verifySelfie,
-
-                            borderRadius:
-                                BorderRadius.circular(10),
-
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                vertical: 8,
-                              ),
-
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    selfieVerified
-                                        ? Icons
-                                            .check_circle
-                                        : Icons
-                                            .camera_alt_outlined,
-
-                                    color:
-                                        selfieVerified
-                                            ? Colors.green
-                                            : Colors.black87,
-                                  ),
-
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-
-                                  Expanded(
-                                    child: Text(
-                                      selfieVerified
-                                          ? 'Live Selfie Verified'
-                                          : 'Live Selfie & Face Match',
-
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color:
-                                            selfieVerified
-                                                ? Colors.green
-                                                : Colors.black87,
-                                      ),
-                                    ),
-                                  ),
-
-                                  if (!selfieVerified)
-                                    const Icon(
-                                      Icons
-                                          .arrow_forward_ios,
-                                      size: 18,
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          // =================================
-                          // STATUS MESSAGE
-                          // =================================
-
-                          Align(
-                            alignment:
-                                Alignment.centerLeft,
-
-                            child: Row(
-                              children: [
-                                Icon(
-                                  allVerified
-                                      ? Icons.check_circle
-                                      : Icons.info_outline,
-
-                                  color: allVerified
-                                      ? Colors.green
-                                      : const Color(
-                                          0xFFC00055,
-                                        ),
-
-                                  size: 21,
-                                ),
-
-                                const SizedBox(width: 10),
-
-                                Expanded(
-                                  child: Text(
-                                    allVerified
-                                        ? 'Identity verification completed'
-                                        : 'Complete Government ID and selfie verification',
-
-                                    style: TextStyle(
-                                      color: allVerified
-                                          ? Colors.green
-                                          : const Color(
-                                              0xFFC00055,
-                                            ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              const SizedBox(height: 45),
-
-              // =====================================
-              // COMPLETE VERIFICATION
-              // =====================================
+              const SizedBox(height: 40),
 
               Opacity(
-                opacity: allVerified ? 1 : 0.45,
+                opacity: allVerified ? 1 : 0.5,
 
                 child: SignupPrimaryButton(
                   text: 'COMPLETE VERIFICATION',
                   icon: Icons.lock_outline,
-
                   onPressed: completeVerification,
                 ),
               ),
-
-              const SizedBox(height: 30),
             ],
           ),
         ),
