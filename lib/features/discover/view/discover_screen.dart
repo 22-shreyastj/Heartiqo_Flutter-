@@ -6,6 +6,9 @@ import '../widgets/discover_filter_bar.dart';
 import '../widgets/discover_header.dart';
 import '../widgets/discover_profile_card.dart';
 import '../widgets/discover_view_toggle.dart';
+import 'discover_filter_screen.dart';
+import 'discover_advanced_filter_screen.dart';
+import 'discover_profile_detail_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -52,24 +55,42 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           avatarUrl:
                               'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
                           onNotificationTap: () {},
+                          onSearchTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DiscoverFilterScreen(
+                                  controller: _controller,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 14),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 14)),
 
                       // Filter Bar
                       SliverToBoxAdapter(
                         child: DiscoverFilterBar(
                           selectedFilter: _controller.selectedFilter,
-                          onFilterSelected: _controller.setFilter,
+                          onFilterSelected: (_) async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DiscoverAdvancedFilterScreen(
+                                  controller: _controller,
+                                ),
+                              ),
+                            );
+                          },
+                          selectedDistance: _controller.selectedDistance,
+                          onDistanceSelected: _controller.setDistanceFilter,
+                          selectedInterests: _controller.selectedInterests,
+                          onInterestsSelected: _controller.setSelectedInterests,
+                          availableInterests: _controller.availableInterests,
                         ),
                       ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 18),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 18)),
 
                       // View Toggle (Grid / Map)
                       SliverToBoxAdapter(
@@ -79,9 +100,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         ),
                       ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 16),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
                       // Main Content: Grid vs Map
                       if (_controller.isGridView)
@@ -91,28 +110,36 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             vertical: 4,
                           ),
                           sliver: SliverGrid(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final profile = _controller.profiles[index];
-                                return DiscoverProfileCard(
-                                  profile: profile,
-                                  onFavoriteTap: () {
-                                    _controller.toggleFavorite(profile.id);
-                                  },
-                                  onTap: () {
-                                    // Navigate to profile detail if needed
-                                  },
-                                );
-                              },
-                              childCount: _controller.profiles.length,
-                            ),
+                            delegate: SliverChildBuilderDelegate((
+                              context,
+                              index,
+                            ) {
+                              final profile = _controller.profiles[index];
+                              return DiscoverProfileCard(
+                                profile: profile,
+                                onFavoriteTap: () {
+                                  _controller.toggleFavorite(profile.id);
+                                },
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          DiscoverProfileDetailScreen(
+                                            profile: profile,
+                                            controller: _controller,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }, childCount: _controller.profiles.length),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 14,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.68,
-                            ),
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 14,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 0.68,
+                                ),
                           ),
                         )
                       else
@@ -121,9 +148,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           child: _MapViewPlaceholder(),
                         ),
 
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 20),
-                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 20)),
                     ],
                   ),
                 ),
@@ -166,11 +191,7 @@ class _MapViewPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Icon(
-            Icons.map_rounded,
-            size: 54,
-            color: Color(0xFFC41C70),
-          ),
+          Icon(Icons.map_rounded, size: 54, color: Color(0xFFC41C70)),
           SizedBox(height: 12),
           Text(
             'Map View',
@@ -183,10 +204,7 @@ class _MapViewPlaceholder extends StatelessWidget {
           SizedBox(height: 4),
           Text(
             'Discover nearby matches on interactive map',
-            style: TextStyle(
-              fontSize: 13.5,
-              color: Color(0xFF7A5A66),
-            ),
+            style: TextStyle(fontSize: 13.5, color: Color(0xFF7A5A66)),
           ),
         ],
       ),

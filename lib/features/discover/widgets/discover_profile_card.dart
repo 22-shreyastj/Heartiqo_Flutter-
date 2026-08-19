@@ -22,9 +22,7 @@ class DiscoverProfileCard extends StatelessWidget {
         child: Stack(
           children: [
             // Background Image
-            Positioned.fill(
-              child: _ProfileImage(imageUrl: profile.imageUrl),
-            ),
+            Positioned.fill(child: _ProfileImage(imageUrl: profile.imageUrl)),
 
             // Bottom Gradient Overlay
             Positioned.fill(
@@ -194,11 +192,7 @@ class _VerifiedBadge extends StatelessWidget {
         color: Color(0xFF26A69A),
         shape: BoxShape.circle,
       ),
-      child: const Icon(
-        Icons.check_rounded,
-        color: Colors.white,
-        size: 11,
-      ),
+      child: const Icon(Icons.check_rounded, color: Colors.white, size: 11),
     );
   }
 }
@@ -238,11 +232,7 @@ class _ImagePlaceholder extends StatelessWidget {
     return Container(
       color: const Color(0xFFE8D5DC),
       child: const Center(
-        child: Icon(
-          Icons.person_rounded,
-          color: Color(0xFF8A0B3B),
-          size: 40,
-        ),
+        child: Icon(Icons.person_rounded, color: Color(0xFF8A0B3B), size: 40),
       ),
     );
   }
