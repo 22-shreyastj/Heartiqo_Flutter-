@@ -7,6 +7,9 @@ import '../widgets/discover_filter_bar.dart';
 import '../widgets/discover_header.dart';
 import '../widgets/discover_profile_card.dart';
 import '../widgets/discover_view_toggle.dart';
+import 'discover_filter_screen.dart';
+import 'discover_advanced_filter_screen.dart';
+import 'discover_profile_detail_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -53,6 +56,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           avatarUrl:
                               'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
                           onNotificationTap: () {},
+                          onSearchTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DiscoverFilterScreen(
+                                  controller: _controller,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
 
@@ -62,7 +74,20 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       SliverToBoxAdapter(
                         child: DiscoverFilterBar(
                           selectedFilter: _controller.selectedFilter,
-                          onFilterSelected: _controller.setFilter,
+                          onFilterSelected: (_) async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DiscoverAdvancedFilterScreen(
+                                  controller: _controller,
+                                ),
+                              ),
+                            );
+                          },
+                          selectedDistance: _controller.selectedDistance,
+                          onDistanceSelected: _controller.setDistanceFilter,
+                          selectedInterests: _controller.selectedInterests,
+                          onInterestsSelected: _controller.setSelectedInterests,
+                          availableInterests: _controller.availableInterests,
                         ),
                       ),
 
@@ -97,7 +122,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   _controller.toggleFavorite(profile.id);
                                 },
                                 onTap: () {
-                                  // Navigate to profile detail if needed
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          DiscoverProfileDetailScreen(
+                                            profile: profile,
+                                            controller: _controller,
+                                          ),
+                                    ),
+                                  );
                                 },
                               );
                             }, childCount: _controller.profiles.length),
