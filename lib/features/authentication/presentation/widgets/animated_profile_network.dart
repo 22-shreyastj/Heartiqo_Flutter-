@@ -23,10 +23,6 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
-  // ============================================================
-  // PROFILE CONFIGURATION
-  // ============================================================
-
   static const List<_OrbitProfile> _profiles = [
     _OrbitProfile(
       angle: -2.55,
@@ -87,15 +83,6 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
   void initState() {
     super.initState();
 
-    // ------------------------------------------------------------
-    // Faster continuous animation.
-    //
-    // Previously: 7 seconds
-    // Now: 4 seconds
-    //
-    // Profiles still move only slightly around their positions.
-    // ------------------------------------------------------------
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
@@ -123,19 +110,14 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                // Main orbit
                 _buildMainOrbit(size),
 
-                // Subtle inner orbit
                 _buildInnerOrbit(size),
 
-                // Small floating icons
                 ..._buildFloatingIcons(size),
 
-                // Profile nodes
                 ..._buildProfiles(size),
 
-                // Center profile
                 _buildCenterProfile(size),
               ],
             );
@@ -145,10 +127,6 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
     );
   }
 
-  // ============================================================
-  // MAIN ORBIT
-  // ============================================================
-
   Widget _buildMainOrbit(double size) {
     return Container(
       width: size * 0.86,
@@ -156,16 +134,12 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: AppColors.magenta.withOpacity(0.17),
+          color: AppColors.magenta.withValues(alpha: 0.17),
           width: 4,
         ),
       ),
     );
   }
-
-  // ============================================================
-  // INNER ORBIT
-  // ============================================================
 
   Widget _buildInnerOrbit(double size) {
     return Container(
@@ -174,50 +148,27 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: AppColors.magenta.withOpacity(0.055),
+          color: AppColors.magenta.withValues(alpha: 0.055),
           width: 2,
         ),
       ),
     );
   }
 
-  // ============================================================
-  // PROFILE ANIMATION
-  // ============================================================
-
   List<Widget> _buildProfiles(double size) {
     final orbitRadius = size * 0.425;
 
     return _profiles.map((profile) {
-      // Continuous animation.
       final t = (_controller.value * math.pi * 2) + profile.phase;
 
-      // ==========================================================
-      // ENTRANCE ANIMATION
-      // ==========================================================
-
-      //
-      // First ~25% of the controller:
-      //
-      // profile starts closer to center
-      //        ↓
-      // moves toward orbit
-      //        ↓
-      // settles
-      //
       final entranceProgress = Curves.easeOutBack.transform(
         (_controller.value / 0.25).clamp(0.0, 1.0),
       );
 
-      // Start closer to center and move outward.
       final startRadius = orbitRadius * 0.55;
 
       final currentRadius =
           startRadius + ((orbitRadius - startRadius) * entranceProgress);
-
-      // ==========================================================
-      // SMALL CONTINUOUS MOVEMENT
-      // ==========================================================
 
       final angle = profile.angle + math.sin(t) * profile.movement;
 
@@ -231,19 +182,11 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
 
       final profileSize = size * profile.size;
 
-      // ==========================================================
-      // FLOATING MOVEMENT
-      // ==========================================================
-
       final floatingY = math.sin(t * 1.2) * profile.verticalMovement;
 
       final left = (size / 2) + x - (profileSize / 2);
 
       final top = (size / 2) + y - (profileSize / 2) + floatingY;
-
-      // ==========================================================
-      // ENTRANCE SCALE
-      // ==========================================================
 
       final entranceScale = Tween<double>(begin: 0.55, end: 1.0).transform(
         Curves.easeOutBack.transform(
@@ -251,14 +194,9 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
         ),
       );
 
-      // Small continuous breathing.
       final breathingScale = 1.0 + math.sin(t * 1.15) * 0.018;
 
       final finalScale = entranceScale * breathingScale;
-
-      // ==========================================================
-      // ENTRANCE FADE
-      // ==========================================================
 
       final opacity = Curves.easeOut.transform(
         (_controller.value / 0.18).clamp(0.0, 1.0),
@@ -280,10 +218,6 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       );
     }).toList();
   }
-
-  // ============================================================
-  // FLOATING ICONS
-  // ============================================================
 
   List<Widget> _buildFloatingIcons(double size) {
     final icons = [
@@ -337,10 +271,6 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
     }).toList();
   }
 
-  // ============================================================
-  // CENTER PROFILE
-  // ============================================================
-
   Widget _buildCenterProfile(double size) {
     final outerSize = size * 0.32;
 
@@ -350,10 +280,10 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: const Color(0xFF3B3940),
-        border: Border.all(color: Colors.white.withOpacity(0.70), width: 2),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.70), width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 14,
             offset: const Offset(0, 5),
           ),
@@ -365,7 +295,9 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
             ? Image.asset(
                 widget.centerImageAsset!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
+
+                errorBuilder: (_, _, _) {
+
                   return _centerPlaceholder(size);
                 },
               )
@@ -381,10 +313,6 @@ class _AnimatedProfileNetworkState extends State<AnimatedProfileNetwork>
     );
   }
 }
-
-// ================================================================
-// PROFILE CONFIGURATION
-// ================================================================
 
 class _OrbitProfile {
   final double angle;
@@ -404,10 +332,6 @@ class _OrbitProfile {
   });
 }
 
-// ================================================================
-// FLOATING ICON CONFIGURATION
-// ================================================================
-
 class _FloatingIcon {
   final double angle;
   final double radius;
@@ -422,10 +346,6 @@ class _FloatingIcon {
   });
 }
 
-// ================================================================
-// FLOATING ICON
-// ================================================================
-
 class _SmallOrbitIcon extends StatelessWidget {
   final double size;
   final IconData icon;
@@ -438,13 +358,13 @@ class _SmallOrbitIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.30),
+        color: Colors.white.withValues(alpha: 0.30),
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
         size: size * 0.55,
-        color: AppColors.magenta.withOpacity(0.70),
+        color: AppColors.magenta.withValues(alpha: 0.70),
       ),
     );
   }

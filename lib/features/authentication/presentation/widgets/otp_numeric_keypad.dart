@@ -98,7 +98,7 @@ class _OtpKeyButton extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: AppColors.darkPurple.withOpacity(0.12),
+                color: AppColors.darkPurple.withValues(alpha: 0.12),
               ),
               boxShadow: const [
                 BoxShadow(

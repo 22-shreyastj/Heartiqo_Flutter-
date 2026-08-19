@@ -6,11 +6,7 @@ class OtpCodeInput extends StatelessWidget {
   final List<String> digits;
   final int length;
 
-  const OtpCodeInput({
-    super.key,
-    required this.digits,
-    this.length = 4,
-  });
+  const OtpCodeInput({super.key, required this.digits, this.length = 4});
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +14,9 @@ class OtpCodeInput extends StatelessWidget {
       builder: (context, constraints) {
         const spacing = 10.0;
 
-        final availableWidth =
-            constraints.maxWidth - (spacing * (length - 1));
+        final availableWidth = constraints.maxWidth - (spacing * (length - 1));
 
-        final boxWidth = (availableWidth / length).clamp(
-          48.0,
-          64.0,
-        );
+        final boxWidth = (availableWidth / length).clamp(48.0, 64.0);
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,11 +67,7 @@ class OtpDigitBox extends StatelessWidget {
       height: 64,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        // Filled → purple
-        // Empty → white
-        color: isFilled
-            ? AppColors.darkPurple
-            : Colors.white,
+        color: isFilled ? AppColors.darkPurple : Colors.white,
 
         borderRadius: BorderRadius.circular(16),
 
@@ -87,27 +75,24 @@ class OtpDigitBox extends StatelessWidget {
           color: isFilled
               ? AppColors.darkPurple
               : isActive
-                  ? AppColors.darkPurple
-                  : AppColors.darkPurple.withOpacity(0.18),
+              ? AppColors.darkPurple
+              : AppColors.darkPurple.withValues(alpha: 0.18),
           width: isActive || isFilled ? 2 : 1.2,
         ),
 
         boxShadow: [
           if (isFilled)
             BoxShadow(
-              color: AppColors.darkPurple.withOpacity(0.18),
+              color: AppColors.darkPurple.withValues(alpha: 0.18),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
         ],
       ),
-
       child: Text(
         value,
         style: TextStyle(
-          color: isFilled
-              ? Colors.white
-              : AppColors.darkPurple,
+          color: isFilled ? Colors.white : AppColors.darkPurple,
           fontSize: 24,
           fontWeight: FontWeight.w700,
         ),

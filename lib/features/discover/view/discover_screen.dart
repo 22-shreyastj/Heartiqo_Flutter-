@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bottom_nav.dart';
-import '../../profile/view/profile_screen.dart';
+import '../../../pages/main_navigation_page.dart';
 import '../controller/discover_controller.dart';
 import '../widgets/discover_filter_bar.dart';
 import '../widgets/discover_header.dart';
@@ -153,26 +154,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   ),
                 ),
 
-                // Reused App Bottom Navigation Bar
-                AppBottomNav(
-                  currentIndex: _currentNavIndex,
-                  onItemSelected: (index) {
-                    setState(() {
-                      _currentNavIndex = index;
-                    });
-                    if (index == 4 || index == 0) {
-                      if (Navigator.of(context).canPop()) {
-                        Navigator.of(context).pop();
-                      } else {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                ),
               ],
             );
           },

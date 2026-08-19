@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-
 import '../../app/app_colors.dart';
+import '../../features/profile/model/profile_model.dart';
+import '../../features/profile/service/liked_profiles_service.dart';
 
 class AppHeader extends StatelessWidget {
   final String? avatarImage;
   final String location;
   final VoidCallback? onSearch;
   final VoidCallback? onNotification;
+  final VoidCallback? onLikes;
 
   const AppHeader({
     super.key,
@@ -14,6 +16,7 @@ class AppHeader extends StatelessWidget {
     this.location = 'Hyderabad',
     this.onSearch,
     this.onNotification,
+    this.onLikes,
   });
 
   @override
@@ -28,29 +31,44 @@ class AppHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Heartiqo',
-                style: TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.deepPink,
-                ),
+              Row(
+                children: [
+                  ShaderMask(
+                    shaderCallback: (bounds) =>
+                        AppColors.primaryGradient.createShader(bounds),
+                    child: const Text(
+                      'Heartiqo',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.auto_awesome,
+                    size: 14,
+                    color: AppColors.secondaryAccent,
+                  ),
+                ],
               ),
               const SizedBox(height: 2),
               Row(
                 children: [
                   const Icon(
                     Icons.location_on_outlined,
-                    size: 15,
-                    color: AppColors.darkPurple,
+                    size: 14,
+                    color: Color(0xFF6B7280),
                   ),
                   const SizedBox(width: 3),
                   Text(
                     location,
                     style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.darkPurple,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -59,26 +77,81 @@ class AppHeader extends StatelessWidget {
           ),
         ),
 
+        // Search button
         IconButton(
           onPressed: onSearch,
-          icon: const Icon(Icons.search_rounded, size: 26),
+          icon: const Icon(
+            Icons.search_rounded,
+            size: 25,
+            color: AppColors.dark,
+          ),
         ),
 
+        // Likes button with count
+        ValueListenableBuilder<List<ProfileModel>>(
+          valueListenable: LikedProfilesService.instance,
+          builder: (context, likedList, child) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  onPressed: onLikes,
+                  icon: const Icon(
+                    Icons.favorite_rounded,
+                    size: 23,
+                    color: AppColors.emotionalAccent,
+                  ),
+                ),
+                if (likedList.isNotEmpty)
+                  Positioned(
+                    right: 4,
+                    top: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        '${likedList.length}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+
+        // Notification button with indicator
         Stack(
           clipBehavior: Clip.none,
           children: [
             IconButton(
               onPressed: onNotification,
-              icon: const Icon(Icons.notifications_none_rounded, size: 26),
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                size: 25,
+                color: AppColors.dark,
+              ),
             ),
             Positioned(
-              right: 7,
-              top: 7,
+              right: 8,
+              top: 8,
               child: Container(
-                width: 7,
-                height: 7,
+                width: 8,
+                height: 8,
                 decoration: const BoxDecoration(
-                  color: AppColors.deepPink,
+                  color: AppColors.emotionalAccent,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -91,22 +164,31 @@ class AppHeader extends StatelessWidget {
 
   Widget _buildAvatar() {
     return Container(
-      width: 42,
-      height: 42,
-      decoration: const BoxDecoration(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Color(0xFFF3DDE4),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.3),
+          width: 2,
+        ),
       ),
       child: ClipOval(
         child: avatarImage != null && avatarImage!.isNotEmpty
             ? Image.asset(
                 avatarImage!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
-                  return const Icon(Icons.person, color: AppColors.deepPink);
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.person,
+                    color: AppColors.primary,
+                  );
                 },
               )
-            : const Icon(Icons.person, color: AppColors.deepPink),
+            : const Icon(
+                Icons.person,
+                color: AppColors.primary,
+              ),
       ),
     );
   }
