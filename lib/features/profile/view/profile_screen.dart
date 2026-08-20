@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../../add_profile_page.dart';
 import '../../../app/app_colors.dart';
-import '../../../core/widgets/app_bottom_nav.dart';
 import '../../../core/widgets/app_header.dart';
 import '../../../pages/main_navigation_page.dart';
-import '../../chat/view/chat_list_page.dart';
+import '../../authentication/presentation/screens/welcome_screen.dart';
+import '../../help/view/help_support_screen.dart';
+import '../../safety_center/view/safety_center_screen.dart';
+import '../../settings/view/discovery_settings_screen.dart';
+import '../../subscription/view/upgrade_subscription_screen.dart';
 import '../controller/profile_controller.dart';
 import '../model/profile_model.dart';
 import '../widgets/profile_settings_list.dart';
 import '../widgets/profile_stats_card.dart';
 import '../widgets/profile_upgrade_banner.dart';
+import 'account_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -29,7 +33,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final ProfileController _controller;
-  int _currentNavIndex = 4; // Profile tab index
 
   @override
   void initState() {
@@ -39,7 +42,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _onProfileUpdated() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -61,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Shared App Header
             AppHeader(
               avatarImage: profile.avatarUrl,
-              location: 'Hyderabad',
+              location: profile.location.split(',').first,
               onSearch: _onSearch,
               onNotification: widget.onNotificationTap ?? _onNotification,
             ),
@@ -92,7 +97,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 20),
 
                     // Premium Upgrade Banner
-                    ProfileUpgradeBanner(onUpgradeTap: _onUpgrade),
+                    ProfileUpgradeBanner(
+                      onUpgradeTap: _onUpgrade,
+                      currentPlan: profile.subscriptionPlan,
+                      isPremium: profile.isPremium,
+                    ),
 
                     const SizedBox(height: 20),
 
@@ -208,9 +217,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const SizedBox(height: 4),
 
-        // Occupation
+        // Occupation / Job Title
         Text(
-          profile.occupation,
+          profile.occupation.isNotEmpty
+              ? profile.occupation
+              : profile.jobTitle,
           style: const TextStyle(
             fontSize: 13.5,
             fontWeight: FontWeight.w500,
@@ -273,7 +284,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _onSearch() {
-    // TODO: Navigate to search
+    // Search action
   }
 
   void _onNotification() {
@@ -291,34 +302,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _onUpgrade() {
-    ScaffoldMessenger.of(
+  void _onUpgrade() async {
+    final result = await Navigator.push(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Opening Premium Upgrade...')));
+      MaterialPageRoute(
+        builder: (context) =>
+            UpgradeSubscriptionScreen(controller: _controller),
+      ),
+    );
+    if (result == true) {
+      setState(() {});
+    }
   }
 
-  void _onAccountTap() {
-    ScaffoldMessenger.of(
+  void _onAccountTap() async {
+    final result = await Navigator.push(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Account settings tapped')));
+      MaterialPageRoute(
+        builder: (context) => AccountScreen(controller: _controller),
+      ),
+    );
+    if (result == true) {
+      setState(() {});
+    }
   }
 
-  void _onDiscoverySettingsTap() {
-    ScaffoldMessenger.of(
+  void _onDiscoverySettingsTap() async {
+    final result = await Navigator.push(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Discovery settings tapped')));
+      MaterialPageRoute(
+        builder: (context) =>
+            DiscoverySettingsScreen(controller: _controller),
+      ),
+    );
+    if (result == true) {
+      setState(() {});
+    }
   }
 
   void _onSafetyTap() {
-    ScaffoldMessenger.of(
+    Navigator.push(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Safety center tapped')));
+      MaterialPageRoute(
+        builder: (context) => const SafetyCenterScreen(),
+      ),
+    );
   }
 
   void _onHelpTap() {
-    ScaffoldMessenger.of(
+    Navigator.push(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Help & support tapped')));
+      MaterialPageRoute(
+        builder: (context) => const HelpSupportScreen(),
+      ),
+    );
   }
 
   void _onLogout() {
@@ -326,8 +363,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to log out of Heartiqo?'),
+        title: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w800)),
+        content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -337,11 +374,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-
+              await _controller.logout();
+              if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Logged out successfully')),
+              );
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => const WelcomeScreen(),
+                ),
+                (route) => false,
               );
             },
             style: ElevatedButton.styleFrom(
@@ -355,49 +399,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
-  }
-
-  void _onNavigationChanged(int index) {
-    setState(() {
-      _currentNavIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const MainNavigationPage(initialIndex: 0),
-          ),
-        );
-        break;
-      case 1:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const MainNavigationPage(initialIndex: 1),
-          ),
-        );
-        break;
-      case 2:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const MainNavigationPage(initialIndex: 2),
-          ),
-        );
-        break;
-      case 3:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const MainNavigationPage(initialIndex: 3),
-          ),
-        );
-        break;
-      case 4:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const MainNavigationPage(initialIndex: 4),
-          ),
-        );
-        break;
-    }
   }
 }
