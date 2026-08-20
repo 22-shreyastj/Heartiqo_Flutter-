@@ -213,30 +213,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Bottom Navigation
-            AppBottomNav(
-              currentIndex: _currentNavIndex,
-              onItemSelected: (index) {
-                setState(() {
-                  _currentNavIndex = index;
-                });
-
-                if (index == 1) {
-                  _navigateToDiscover();
-                } else if (index == 3) {
-                  _navigateToLikes();
-                } else if (index == 2 || index == 4) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Navigated to section $index',
-                      ),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                }
-              },
-            ),
+            
           ],
         ),
       ),
