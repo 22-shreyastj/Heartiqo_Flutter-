@@ -19,6 +19,11 @@ class ProfileModel {
   final bool verified;
   final String matchPercentage;
   final String matchReason;
+  final String email;
+  final String phoneNumber;
+  final String dob;
+  final String subscriptionPlan;
+  final bool isPremium;
 
   const ProfileModel({
     this.id = '1',
@@ -52,6 +57,11 @@ class ProfileModel {
     this.verified = true,
     this.matchPercentage = '96%',
     this.matchReason = 'You both love Travel & Music!',
+    this.email = 'alex.morgan@example.com',
+    this.phoneNumber = '+1 (555) 234-5678',
+    this.dob = '1996-05-15',
+    this.subscriptionPlan = 'Free',
+    this.isPremium = false,
   });
 
   /// Compatibility getter used by existing UI code.
@@ -59,6 +69,75 @@ class ProfileModel {
 
   /// Compatibility getter used by existing UI code.
   List<String> get tags => selectedInterests;
+
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    return ProfileModel(
+      id: json['id'] as String? ?? '1',
+      name: json['name'] as String? ?? '',
+      age: json['age'] as int? ?? 18,
+      occupation: json['occupation'] as String? ?? '',
+      avatarUrl: json['avatarUrl'] as String? ?? '',
+      photos: (json['photos'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      likesCount: json['likesCount'] as int? ?? 0,
+      matchesCount: json['matchesCount'] as int? ?? 0,
+      viewsCount: json['viewsCount'] as String? ?? '0',
+      bio: json['bio'] as String? ?? '',
+      jobTitle: json['jobTitle'] as String? ?? '',
+      education: json['education'] as String? ?? '',
+      gender: json['gender'] as String? ?? '',
+      location: json['location'] as String? ?? '',
+      selectedInterests: (json['selectedInterests'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      availableInterests: (json['availableInterests'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      distance: json['distance'] as String? ?? '',
+      verified: json['verified'] as bool? ?? false,
+      matchPercentage: json['matchPercentage'] as String? ?? '',
+      matchReason: json['matchReason'] as String? ?? '',
+      email: json['email'] as String? ?? 'alex.morgan@example.com',
+      phoneNumber: json['phoneNumber'] as String? ?? '+1 (555) 234-5678',
+      dob: json['dob'] as String? ?? '1996-05-15',
+      subscriptionPlan: json['subscriptionPlan'] as String? ?? 'Free',
+      isPremium: json['isPremium'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'age': age,
+      'occupation': occupation,
+      'avatarUrl': avatarUrl,
+      'photos': photos,
+      'likesCount': likesCount,
+      'matchesCount': matchesCount,
+      'viewsCount': viewsCount,
+      'bio': bio,
+      'jobTitle': jobTitle,
+      'education': education,
+      'gender': gender,
+      'location': location,
+      'selectedInterests': selectedInterests,
+      'availableInterests': availableInterests,
+      'distance': distance,
+      'verified': verified,
+      'matchPercentage': matchPercentage,
+      'matchReason': matchReason,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'dob': dob,
+      'subscriptionPlan': subscriptionPlan,
+      'isPremium': isPremium,
+    };
+  }
 
   ProfileModel copyWith({
     String? id,
@@ -81,6 +160,11 @@ class ProfileModel {
     bool? verified,
     String? matchPercentage,
     String? matchReason,
+    String? email,
+    String? phoneNumber,
+    String? dob,
+    String? subscriptionPlan,
+    bool? isPremium,
   }) {
     return ProfileModel(
       id: id ?? this.id,
@@ -106,6 +190,11 @@ class ProfileModel {
       matchPercentage:
           matchPercentage ?? this.matchPercentage,
       matchReason: matchReason ?? this.matchReason,
+      email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      dob: dob ?? this.dob,
+      subscriptionPlan: subscriptionPlan ?? this.subscriptionPlan,
+      isPremium: isPremium ?? this.isPremium,
     );
   }
-}
+}
