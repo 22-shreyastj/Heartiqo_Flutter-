@@ -3,23 +3,35 @@ import '../../../app/app_colors.dart';
 
 class ProfileUpgradeBanner extends StatelessWidget {
   final VoidCallback? onUpgradeTap;
+  final String currentPlan;
+  final bool isPremium;
 
   const ProfileUpgradeBanner({
     super.key,
     this.onUpgradeTap,
+    this.currentPlan = 'Free',
+    this.isPremium = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final title = isPremium
+        ? 'Active Plan: $currentPlan'
+        : 'Upgrade to Premium';
+    final subtitle = isPremium
+        ? 'Enjoying unlimited likes, rewinds & extra perks!'
+        : 'See who likes you & get unlimited rewinds!';
+    final buttonText = isPremium ? 'Manage Subscription' : 'Upgrade Now';
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.softPinkSlot,
+        color: isPremium ? const Color(0xFFFFF0F5) : AppColors.softPinkSlot,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: AppColors.brandPink.withValues(alpha: 0.12),
-          width: 1,
+          color: AppColors.brandPink.withValues(alpha: 0.2),
+          width: 1.2,
         ),
       ),
       child: Column(
@@ -29,32 +41,32 @@ class ProfileUpgradeBanner extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.brandPink.withValues(alpha: 0.1),
+                  color: AppColors.brandPink.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.star_rounded,
+                child: Icon(
+                  isPremium ? Icons.workspace_premium_rounded : Icons.star_rounded,
                   color: AppColors.brandPink,
                   size: 24,
                 ),
               ),
               const SizedBox(width: 14),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Upgrade to Premium',
-                      style: TextStyle(
+                      title,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textDark,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
-                      'See who likes you & get unlimited rewinds!',
-                      style: TextStyle(
+                      subtitle,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textMuted,
                       ),
@@ -72,21 +84,21 @@ class ProfileUpgradeBanner extends StatelessWidget {
               onPressed: onUpgradeTap,
               style: ElevatedButton.styleFrom(
                 elevation: 0,
-                backgroundColor: Colors.white,
-                foregroundColor: AppColors.brandPink,
+                backgroundColor: isPremium ? AppColors.brandPink : Colors.white,
+                foregroundColor: isPremium ? Colors.white : AppColors.brandPink,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                   side: BorderSide(
-                    color: AppColors.brandPink.withValues(alpha: 0.2),
+                    color: AppColors.brandPink.withValues(alpha: 0.3),
                   ),
                 ),
               ),
-              child: const Text(
-                'Upgrade Now',
+              child: Text(
+                buttonText,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.brandPink,
+                  color: isPremium ? Colors.white : AppColors.brandPink,
                 ),
               ),
             ),
