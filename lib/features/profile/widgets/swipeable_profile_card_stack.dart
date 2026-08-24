@@ -37,7 +37,7 @@ class SwipeableProfileCardStackState extends State<SwipeableProfileCardStack>
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 700),
     )..addListener(() {
         if (_slideAnimation != null) {
           _dragNotifier.value = _slideAnimation!.value;
@@ -84,7 +84,7 @@ class SwipeableProfileCardStackState extends State<SwipeableProfileCardStack>
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _animController,
-      curve: Curves.easeOut,
+      curve: Curves.easeOutCubic,
     ));
 
     _animController.forward(from: 0.0).then((_) {
@@ -101,7 +101,7 @@ class SwipeableProfileCardStackState extends State<SwipeableProfileCardStack>
       end: endOffset,
     ).animate(CurvedAnimation(
       parent: _animController,
-      curve: Curves.easeOut,
+      curve: Curves.easeOutCubic,
     ));
 
     _animController.forward(from: 0.0).then((_) {

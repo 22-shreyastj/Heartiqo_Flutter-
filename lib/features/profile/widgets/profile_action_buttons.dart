@@ -17,102 +17,86 @@ class ProfileActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _circleButton(
-          icon: Icons.close_rounded,
-          onTap: onReject,
-        ),
+        // 1. Cancel / Reject Button (X) - Left
+        _cancelButton(),
 
-        const SizedBox(width: 14),
+        const SizedBox(width: 24),
 
-        _circleButton(
-          icon: Icons.favorite_rounded,
-          backgroundColor: AppColors.emotionalAccent,
-          iconColor: Colors.white,
-          onTap: onLike,
-        ),
-
-        const SizedBox(width: 14),
-
-        _discoverButton(),
+        // 2. Like Button (❤️) - Center / Right
+        _likeButton(),
       ],
     );
   }
 
-  Widget _circleButton({
-    required IconData icon,
-    required VoidCallback? onTap,
-    Color backgroundColor = Colors.white,
-    Color iconColor = const Color(0xFF6B7280),
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: const Color(0xFFE5E7EB),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.dark.withValues(alpha: 0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+  /// White circular Cancel (X) button with subtle border & shadow (62px diameter)
+  Widget _cancelButton() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onReject,
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 62,
+          height: 62,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xFFE5E7EB),
+              width: 1.5,
             ),
-          ],
-        ),
-        child: Icon(
-          icon,
-          size: 28,
-          color: iconColor,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.dark.withValues(alpha: 0.12),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.close_rounded,
+              size: 32,
+              color: Color(0xFF1F2937),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _discoverButton() {
-    return GestureDetector(
-      onTap: onDiscover,
-      child: Container(
-        height: 60,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 22,
-        ),
-        decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.explore_outlined,
-              size: 22,
+  /// Pink/Coral circular Like (❤️) button (62px diameter)
+  Widget _likeButton() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onLike,
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 62,
+          height: 62,
+          decoration: BoxDecoration(
+            color: AppColors.emotionalAccent,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.emotionalAccent.withValues(alpha: 0.38),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.favorite_rounded,
+              size: 32,
               color: Colors.white,
             ),
-            SizedBox(width: 8),
-            Text(
-              'DISCOVER',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                letterSpacing: .5,
-                color: Colors.white,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
-}
+}
