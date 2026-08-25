@@ -1,10 +1,12 @@
 class MessageModel {
   final String id;
-  final String text;
+  String text;
   final String senderId;
   final DateTime time;
   final bool isMine;
   final bool isRead;
+  bool isDeleted;
+  bool isDeletedForEveryone;
 
   MessageModel({
     required this.id,
@@ -13,5 +15,7 @@ class MessageModel {
     required this.time,
     required this.isMine,
     this.isRead = false,
+    this.isDeleted = false,
+    this.isDeletedForEveryone = false,
   });
 }

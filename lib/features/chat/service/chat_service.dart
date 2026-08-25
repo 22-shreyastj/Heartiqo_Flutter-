@@ -14,23 +14,29 @@ class ChatService {
 
   Future<void> sendMessage(
     String chatId,
-    String text,
+    MessageModel message,
   ) async {
-    // Later:
-    // API call
-    // POST /messages
+    await repository.sendMessage(chatId, message);
   }
 
   Future<void> deleteMessage(
+    String chatId,
     String messageId,
   ) async {
-    // API call later
+    await repository.deleteMessage(chatId, messageId);
+  }
+
+  Future<void> removeMessagePermanently(
+    String chatId,
+    String messageId,
+  ) async {
+    await repository.removeMessagePermanently(chatId, messageId);
   }
 
   Future<void> clearChat(
     String chatId,
   ) async {
-    // API call later
+    await repository.clearChat(chatId);
   }
 
   Future<void> blockUser(

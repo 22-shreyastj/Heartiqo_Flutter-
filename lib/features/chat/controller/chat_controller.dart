@@ -17,7 +17,10 @@ class ChatController extends ChangeNotifier {
   String? muteDuration;
   bool isBlocked = false;
 
+  String? currentChatId;
+
   Future<void> loadMessages(String chatId) async {
+    currentChatId = chatId;
     isLoading = true;
     notifyListeners();
 
@@ -52,18 +55,93 @@ class ChatController extends ChangeNotifier {
 
     service.sendMessage(
       chatId,
-      text,
+      message,
     );
   }
 
-  void deleteMessage(String messageId) {
-    messages.removeWhere(
-      (message) => message.id == messageId,
-    );
+  void deleteMessage(String messageId, {bool forEveryone = false}) {
+    final index = messages.indexWhere((m) => m.id == messageId);
+    if (index != -1) {
+      messages[index].isDeleted = true;
+      messages[index].isDeletedForEveryone = forEveryone;
+      messages[index].text = messages[index].isMine
+          ? 'You deleted this message'
+          : 'This message was deleted';
+      notifyListeners();
+    }
+    if (currentChatId != null) {
+      service.deleteMessage(currentChatId!, messageId);
+    }
+  }
 
+  bool isSelectionMode = false;
+  final Set<String> selectedMessageIds = {};
+
+  void startSelectionMode([String? initialMessageId]) {
+    isSelectionMode = true;
+    selectedMessageIds.clear();
+    if (initialMessageId != null) {
+      selectedMessageIds.add(initialMessageId);
+    }
     notifyListeners();
+  }
 
-    service.deleteMessage(messageId);
+  void toggleMessageSelection(String messageId) {
+    if (selectedMessageIds.contains(messageId)) {
+      selectedMessageIds.remove(messageId);
+      if (selectedMessageIds.isEmpty) {
+        isSelectionMode = false;
+      }
+    } else {
+      selectedMessageIds.add(messageId);
+    }
+    notifyListeners();
+  }
+
+  void clearSelection() {
+    isSelectionMode = false;
+    selectedMessageIds.clear();
+    notifyListeners();
+  }
+
+  void removeMessagePermanently(String messageId) {
+    messages.removeWhere((m) => m.id == messageId);
+    notifyListeners();
+    if (currentChatId != null) {
+      service.removeMessagePermanently(currentChatId!, messageId);
+    }
+  }
+
+  void deleteSelectedMessages({bool forEveryone = false}) {
+    final idsToDelete = List<String>.from(selectedMessageIds);
+    for (final id in idsToDelete) {
+      final msg = messages.firstWhere(
+        (m) => m.id == id,
+        orElse: () => MessageModel(id: '', text: '', senderId: '', time: DateTime.now(), isMine: false),
+      );
+      if (msg.isDeleted || msg.text.contains('deleted this message') || msg.text.contains('message was deleted')) {
+        removeMessagePermanently(id);
+      } else {
+        deleteMessage(id, forEveryone: forEveryone);
+      }
+    }
+    clearSelection();
+  }
+
+  void deleteMessageForMe(String messageId) {
+    final msg = messages.firstWhere(
+      (m) => m.id == messageId,
+      orElse: () => MessageModel(id: '', text: '', senderId: '', time: DateTime.now(), isMine: false),
+    );
+    if (msg.isDeleted || msg.text.contains('deleted this message') || msg.text.contains('message was deleted')) {
+      removeMessagePermanently(messageId);
+    } else {
+      deleteMessage(messageId, forEveryone: false);
+    }
+  }
+
+  void deleteMessageForEveryone(String messageId) {
+    deleteMessage(messageId, forEveryone: true);
   }
 
   void clearChat(String chatId) {

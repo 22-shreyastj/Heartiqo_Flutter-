@@ -4,11 +4,14 @@ import '../controller/chat_controller.dart';
 import '../repository/chat_repository.dart';
 import '../service/chat_service.dart';
 import '../widgets/chat_app_bar.dart';
+import 'call_screen.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_input.dart';
 import '../widgets/message_options.dart';
 import '../widgets/mute_duration_modal.dart';
 import '../widgets/typing_indicator.dart';
+
+import '../widgets/user_profile_modal.dart';
 
 class ChatPage extends StatefulWidget {
   final String chatId;
@@ -70,12 +73,107 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  void _showMultiDeleteConfirmationDialog() {
+    final count = controller.selectedMessageIds.length;
+    if (count == 0) return;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (dialogContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Delete $count ${count == 1 ? "message" : "messages"}?',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Are you sure you want to delete the selected messages?',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.delete_forever_rounded, color: Colors.white, size: 20),
+                    label: Text(
+                      'Delete $count ${count == 1 ? "message" : "messages"}',
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFD41470),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      controller.deleteSelectedMessages(forEveryone: false);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('$count ${count == 1 ? "message" : "messages"} deleted'),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _handleOptionSelected(String value) {
     switch (value) {
       case 'select_messages':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Select messages mode activated')),
-        );
+        controller.startSelectionMode();
         break;
       case 'mute':
         _showMuteDurationPicker();
@@ -98,21 +196,6 @@ class _ChatPageState extends State<ChatPage> {
         break;
       case 'close_chat':
         Navigator.of(context).pop();
-        break;
-      case 'send_call_link':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Call link copied to clipboard')),
-        );
-        break;
-      case 'schedule_call':
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Schedule call with ${widget.name}')),
-        );
-        break;
-      case 'new_group_call':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Starting new group call...')),
-        );
         break;
       case 'report':
         controller.service.reportUser(widget.chatId, 'Reported by user');
@@ -211,14 +294,56 @@ class _ChatPageState extends State<ChatPage> {
             isMuted: controller.muteNotifications,
             muteDuration: controller.muteDuration,
             isBlocked: controller.isBlocked,
+            isSelectionMode: controller.isSelectionMode,
+            selectedCount: controller.selectedMessageIds.length,
+            onClearSelection: controller.clearSelection,
+            onDeleteSelected: _showMultiDeleteConfirmationDialog,
+            onTitleTap: () {
+              UserProfileModal.show(
+                context,
+                name: widget.name,
+                image: widget.image,
+                isOnline: controller.isOnline,
+                isBlocked: controller.isBlocked,
+                onCallTap: () {
+                  controller.sendMessage(widget.chatId, '📞 Voice Call');
+                  CallScreen.startCall(
+                    context,
+                    name: widget.name,
+                    image: widget.image,
+                    isVideo: false,
+                  );
+                },
+                onVideoTap: () {
+                  controller.sendMessage(widget.chatId, '📹 Video Call');
+                  CallScreen.startCall(
+                    context,
+                    name: widget.name,
+                    image: widget.image,
+                    isVideo: true,
+                  );
+                },
+                onToggleBlock: () {
+                  controller.toggleBlockUser(widget.chatId);
+                },
+              );
+            },
             onCallTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Calling ${widget.name}...')),
+              controller.sendMessage(widget.chatId, '📞 Voice Call');
+              CallScreen.startCall(
+                context,
+                name: widget.name,
+                image: widget.image,
+                isVideo: false,
               );
             },
             onVideoTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Starting video call with ${widget.name}...')),
+              controller.sendMessage(widget.chatId, '📹 Video Call');
+              CallScreen.startCall(
+                context,
+                name: widget.name,
+                image: widget.image,
+                isVideo: true,
               );
             },
             onOptionSelected: _handleOptionSelected,
@@ -265,25 +390,72 @@ class _ChatPageState extends State<ChatPage> {
                         itemCount: controller.messages.length,
                         itemBuilder: (context, index) {
                           final message = controller.messages[index];
+                          final isSelected = controller.selectedMessageIds.contains(message.id);
+
                           return ChatBubble(
                             message: message,
+                            isSelectionMode: controller.isSelectionMode,
+                            isSelected: isSelected,
+                            onSelectedChanged: (_) {
+                              controller.toggleMessageSelection(message.id);
+                            },
+                            onTap: () {
+                              final isAlreadyDeleted = message.isDeleted ||
+                                  message.text.contains('deleted this message') ||
+                                  message.text.contains('message was deleted');
+
+                              if (isAlreadyDeleted) {
+                                MessageOptionsModal.show(
+                                  context,
+                                  messageText: message.text,
+                                  onSelect: () {
+                                    controller.startSelectionMode(message.id);
+                                  },
+                                  onRemovePermanently: () {
+                                    controller.removeMessagePermanently(message.id);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Message permanently removed'),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                            },
                             onLongPress: () {
+                              final isAlreadyDeleted = message.isDeleted ||
+                                  message.text.contains('deleted this message') ||
+                                  message.text.contains('message was deleted');
+
                               MessageOptionsModal.show(
                                 context,
                                 messageText: message.text,
+                                onSelect: () {
+                                  controller.startSelectionMode(message.id);
+                                },
+                                onRemovePermanently: isAlreadyDeleted
+                                    ? () {
+                                        controller.removeMessagePermanently(message.id);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Message permanently removed'),
+                                          ),
+                                        );
+                                      }
+                                    : null,
                                 onDeleteForMe: () {
-                                  controller.deleteMessage(message.id);
+                                  controller.deleteMessageForMe(message.id);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Message deleted for you'),
+                                      content: Text('You deleted this message'),
                                     ),
                                   );
                                 },
                                 onDeleteForEveryone: () {
-                                  controller.deleteMessage(message.id);
+                                  controller.deleteMessageForEveryone(message.id);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Message deleted for everyone'),
+                                      content: Text('You deleted this message for everyone'),
                                     ),
                                   );
                                 },

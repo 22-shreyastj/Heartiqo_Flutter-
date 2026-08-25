@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../pages/main_navigation_page.dart';
 import '../model/chat_model.dart';
 import '../repository/chat_repository.dart';
 import '../widgets/online_indicator.dart';
@@ -44,13 +45,24 @@ class _ChatListPageState extends State<ChatListPage> {
       avatarChild = CircleAvatar(
         radius: 26,
         backgroundColor: const Color(0xFFFFDDEB),
-        backgroundImage: NetworkImage(image),
-        onBackgroundImageError: (exception, stackTrace) {},
-        child: Text(
-          name.isNotEmpty ? name[0].toUpperCase() : '?',
-          style: const TextStyle(
-            color: Color(0xFFD41470),
-            fontWeight: FontWeight.bold,
+        child: ClipOval(
+          child: Image.network(
+            image,
+            width: 52,
+            height: 52,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Center(
+                child: Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                  style: const TextStyle(
+                    color: Color(0xFFD41470),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );
@@ -163,19 +175,32 @@ class _ChatListPageState extends State<ChatListPage> {
     );
   }
 
+  void _navigateToHome(BuildContext context) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MainNavigationPage(initialIndex: 0),
+      ),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _navigateToHome(context);
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFF8FB),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0.5,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20),
+            onPressed: () => _navigateToHome(context),
+          ),
         title: const Text(
           'Messages',
           style: TextStyle(
@@ -316,7 +341,13 @@ class _ChatListPageState extends State<ChatListPage> {
                               image: chat.image,
                             ),
                           ),
-                        );
+                        ).then((_) {
+                          if (mounted) {
+                            setState(() {
+                              _chatsFuture = _repository.getChats();
+                            });
+                          }
+                        });
                       },
                     );
                   },
@@ -326,6 +357,7 @@ class _ChatListPageState extends State<ChatListPage> {
           ),
         ],
       ),
+    ),
     );
   }
 }
