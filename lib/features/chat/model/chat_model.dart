@@ -1,9 +1,9 @@
 class ChatModel {
   final String id;
   final String name;
-  final String image;
-  final String lastMessage;
-  final String lastMessageTime;
+  String image;
+  String lastMessage;
+  String lastMessageTime;
   final bool isOnline;
   final bool isTyping;
   final int unreadCount;

@@ -8,8 +8,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isMuted;
   final String? muteDuration;
   final bool isBlocked;
+  final bool isSelectionMode;
+  final int selectedCount;
   final VoidCallback? onCallTap;
   final VoidCallback? onVideoTap;
+  final VoidCallback? onClearSelection;
+  final VoidCallback? onDeleteSelected;
+  final VoidCallback? onTitleTap;
   final PopupMenuItemSelected<String>? onOptionSelected;
 
   const ChatAppBar({
@@ -20,8 +25,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isMuted = false,
     this.muteDuration,
     this.isBlocked = false,
+    this.isSelectionMode = false,
+    this.selectedCount = 0,
     this.onCallTap,
     this.onVideoTap,
+    this.onClearSelection,
+    this.onDeleteSelected,
+    this.onTitleTap,
     this.onOptionSelected,
   });
 
@@ -30,13 +40,24 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       return CircleAvatar(
         radius: 20,
         backgroundColor: const Color(0xFFFFDDEB),
-        backgroundImage: NetworkImage(image),
-        onBackgroundImageError: (exception, stackTrace) {},
-        child: Text(
-          name.isNotEmpty ? name[0].toUpperCase() : '?',
-          style: const TextStyle(
-            color: Color(0xFFD41470),
-            fontWeight: FontWeight.bold,
+        child: ClipOval(
+          child: Image.network(
+            image,
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Center(
+                child: Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                  style: const TextStyle(
+                    color: Color(0xFFD41470),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );
@@ -70,6 +91,31 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isSelectionMode) {
+      return AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        leading: IconButton(
+          icon: const Icon(Icons.close_rounded, color: Colors.black87, size: 24),
+          onPressed: onClearSelection,
+        ),
+        title: Text(
+          '$selectedCount selected',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 24),
+            onPressed: onDeleteSelected,
+          ),
+        ],
+      );
+    }
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0.5,
@@ -77,66 +123,73 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20),
         onPressed: () => Navigator.of(context).pop(),
       ),
-      title: Row(
-        children: [
-          Stack(
+      title: InkWell(
+        onTap: onTitleTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
             children: [
-              _buildAvatar(),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: OnlineIndicator(isOnline: isOnline),
+              Stack(
+                children: [
+                  _buildAvatar(),
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: OnlineIndicator(isOnline: isOnline),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        if (isMuted) ...[
+                          const SizedBox(width: 5),
+                          const Icon(
+                            Icons.volume_off,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      isBlocked
+                          ? 'Blocked'
+                          : isMuted
+                              ? (muteDuration != null ? 'Muted ($muteDuration)' : 'Muted')
+                              : (isOnline ? 'Active now' : 'Offline'),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isBlocked
+                            ? Colors.redAccent
+                            : (isOnline && !isMuted ? Colors.green : Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                    if (isMuted) ...[
-                      const SizedBox(width: 5),
-                      const Icon(
-                        Icons.volume_off,
-                        size: 15,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ],
-                ),
-                Text(
-                  isBlocked
-                      ? 'Blocked'
-                      : isMuted
-                          ? (muteDuration != null ? 'Muted ($muteDuration)' : 'Muted')
-                          : (isOnline ? 'Active now' : 'Offline'),
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: isBlocked
-                        ? Colors.redAccent
-                        : (isOnline && !isMuted ? Colors.green : Colors.grey),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
       actions: [
         IconButton(
@@ -168,34 +221,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
-            const PopupMenuDivider(),
             const PopupMenuItem(
-              value: 'send_call_link',
+              value: 'select_messages',
               child: Row(
                 children: [
-                  Icon(Icons.link, size: 20, color: Colors.black87),
+                  Icon(Icons.check_box_outlined, size: 20, color: Colors.black87),
                   SizedBox(width: 12),
-                  Text('Send call link'),
-                ],
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'schedule_call',
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today_outlined, size: 20, color: Colors.black87),
-                  SizedBox(width: 12),
-                  Text('Schedule call'),
-                ],
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'new_group_call',
-              child: Row(
-                children: [
-                  Icon(Icons.person_add_alt_outlined, size: 20, color: Colors.black87),
-                  SizedBox(width: 12),
-                  Text('New group call'),
+                  Text('Select messages'),
                 ],
               ),
             ),
