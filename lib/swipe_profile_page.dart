@@ -136,19 +136,6 @@ class _SwipeProfilePageState extends State<SwipeProfilePage>
     });
   }
 
-  void _swipeLeft() {
-    if (_animController.isAnimating) return;
-    final screenWidth = MediaQuery.of(context).size.width;
-    _animateCardOut(targetDx: -screenWidth * 1.5, isLike: false);
-  }
-
-  void _swipeRight() {
-    if (_animController.isAnimating) return;
-    LikedProfilesService.instance.addLikedProfile(_currentProfile);
-    final screenWidth = MediaQuery.of(context).size.width;
-    _animateCardOut(targetDx: screenWidth * 1.5, isLike: true);
-  }
-
   void _onSwipeCompleted({required bool isLike}) {
     final matchedProfile = _currentProfile;
     _dragNotifier.value = Offset.zero;
@@ -205,113 +192,65 @@ class _SwipeProfilePageState extends State<SwipeProfilePage>
             children: [
               // Underneath Preview Card (Next Profile) - Efficiently updated via ValueListenableBuilder
               Positioned.fill(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 90),
-                  child: ValueListenableBuilder<Offset>(
-                    valueListenable: _dragNotifier,
-                    child: RepaintBoundary(
-                      child: ProfileCardContent(
-                        key: ValueKey<int>((_currentIndex + 1) % _profiles.length),
-                        profile: _nextProfile,
-                        isLiked: _likedStatus[(_currentIndex + 1) % _profiles.length] ?? false,
-                        onBack: () => Navigator.pop(context),
-                        onFavoriteToggle: () {},
-                        isUnderneathCard: true,
-                      ),
+                child: ValueListenableBuilder<Offset>(
+                  valueListenable: _dragNotifier,
+                  child: RepaintBoundary(
+                    child: ProfileCardContent(
+                      key: ValueKey<int>((_currentIndex + 1) % _profiles.length),
+                      profile: _nextProfile,
+                      isLiked: _likedStatus[(_currentIndex + 1) % _profiles.length] ?? false,
+                      onBack: () => Navigator.pop(context),
+                      onFavoriteToggle: () {},
+                      isUnderneathCard: true,
                     ),
-                    builder: (context, dragOffset, child) {
-                      final dragFraction = (dragOffset.dx / screenWidth).clamp(-1.0, 1.0).abs();
-                      final scale = 0.94 + (dragFraction * 0.06);
-                      final opacity = 0.7 + (dragFraction * 0.3);
-
-                      return Transform.scale(
-                        scale: scale,
-                        child: Opacity(
-                          opacity: opacity,
-                          child: child,
-                        ),
-                      );
-                    },
                   ),
+                  builder: (context, dragOffset, child) {
+                    final dragFraction = (dragOffset.dx / screenWidth).clamp(-1.0, 1.0).abs();
+                    final scale = 0.94 + (dragFraction * 0.06);
+                    final opacity = 0.7 + (dragFraction * 0.3);
+
+                    return Transform.scale(
+                      scale: scale,
+                      child: Opacity(
+                        opacity: opacity,
+                        child: child,
+                      ),
+                    );
+                  },
                 ),
               ),
 
               // Active Top Card - Efficiently transformed without rebuilding inner widget tree during drag
               Positioned.fill(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 90),
-                  child: GestureDetector(
-                    onPanUpdate: _onPanUpdate,
-                    onPanEnd: _onPanEnd,
-                    behavior: HitTestBehavior.translucent,
-                    child: ValueListenableBuilder<Offset>(
-                      valueListenable: _dragNotifier,
-                      child: RepaintBoundary(
-                        child: ProfileCardContent(
-                          key: ValueKey<int>(_currentIndex),
-                          profile: _currentProfile,
-                          isLiked: _isCurrentLiked,
-                          onBack: () => Navigator.pop(context),
-                          onFavoriteToggle: _toggleFavoriteCurrent,
-                          isUnderneathCard: false,
-                        ),
+                child: GestureDetector(
+                  onPanUpdate: _onPanUpdate,
+                  onPanEnd: _onPanEnd,
+                  behavior: HitTestBehavior.translucent,
+                  child: ValueListenableBuilder<Offset>(
+                    valueListenable: _dragNotifier,
+                    child: RepaintBoundary(
+                      child: ProfileCardContent(
+                        key: ValueKey<int>(_currentIndex),
+                        profile: _currentProfile,
+                        isLiked: _isCurrentLiked,
+                        onBack: () => Navigator.pop(context),
+                        onFavoriteToggle: _toggleFavoriteCurrent,
+                        isUnderneathCard: false,
                       ),
-                      builder: (context, dragOffset, child) {
-                        final dragFraction = (dragOffset.dx / screenWidth).clamp(-1.0, 1.0);
-                        final rotationAngle = dragFraction * 0.25;
-
-                        return Transform.translate(
-                          offset: dragOffset,
-                          child: Transform.rotate(
-                            angle: rotationAngle,
-                            alignment: Alignment.bottomCenter,
-                            child: child,
-                          ),
-                        );
-                      },
                     ),
-                  ),
-                ),
-              ),
+                    builder: (context, dragOffset, child) {
+                      final dragFraction = (dragOffset.dx / screenWidth).clamp(-1.0, 1.0);
+                      final rotationAngle = dragFraction * 0.25;
 
-              // Fixed Action Buttons overlay at bottom
-              Positioned(
-                left: 24,
-                right: 24,
-                bottom: 16,
-                child: SafeArea(
-                  top: false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Reject / Pass Button
-                      FloatingActionButton.large(
-                        heroTag: 'swipe_pass_btn',
-                        onPressed: _swipeLeft,
-                        backgroundColor: Colors.white,
-                        elevation: 6,
-                        shape: const CircleBorder(),
-                        child: const Icon(
-                          Icons.close_rounded,
-                          color: Color(0xFF6B7280),
-                          size: 36,
+                      return Transform.translate(
+                        offset: dragOffset,
+                        child: Transform.rotate(
+                          angle: rotationAngle,
+                          alignment: Alignment.bottomCenter,
+                          child: child,
                         ),
-                      ),
-
-                      // Like / Heart Button
-                      FloatingActionButton.large(
-                        heroTag: 'swipe_like_btn',
-                        onPressed: _swipeRight,
-                        backgroundColor: AppColors.emotionalAccent,
-                        elevation: 8,
-                        shape: const CircleBorder(),
-                        child: const Icon(
-                          Icons.favorite_rounded,
-                          color: Colors.white,
-                          size: 36,
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),
@@ -673,7 +612,7 @@ class ProfileCardContent extends StatelessWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 100), // Space for floating action buttons
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + 24),
                   ],
                 ),
               ),

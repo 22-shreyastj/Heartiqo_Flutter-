@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'app/app_colors.dart';
-import 'core/widgets/app_bottom_nav.dart';
 import 'core/widgets/app_header.dart';
 import 'discover_page.dart';
-import 'features/chat/view/chat_list_page.dart';
 import 'features/notifications/view/alerts_page.dart';
 import 'features/profile/data/sample_profiles.dart';
 import 'features/profile/model/profile_model.dart';
-import 'features/profile/view/profile_screen.dart';
 import 'features/profile/widgets/profile_action_buttons.dart';
 import 'features/profile/widgets/profile_filter_bar.dart';
 import 'features/profile/widgets/swipeable_profile_card_stack.dart';
@@ -24,7 +21,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedFilter = 0;
-  int _currentNavIndex = 0;
   int _currentProfileIndex = 0;
 
   final GlobalKey<SwipeableProfileCardStackState> _cardStackKey =
@@ -180,34 +176,42 @@ class _HomePageState extends State<HomePage> {
 
                     const SizedBox(height: 18),
 
-                    // Swipeable Tinder-Style Profile Card Stack
-                    SwipeableProfileCardStack(
-                      key: _cardStackKey,
-                      profiles: _profiles,
-                      currentIndex: _currentProfileIndex,
-                      onProfileChanged: (newIndex) {
-                        setState(() {
-                          _currentProfileIndex = newIndex;
-                        });
-                      },
-                      onTapCard: _navigateToProfileDetails,
-                      onLike: () {},
+                    // Swipeable Tinder-Style Profile Card Stack with Overlapping Action Buttons
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 28),
+                          child: SwipeableProfileCardStack(
+                            key: _cardStackKey,
+                            profiles: _profiles,
+                            currentIndex: _currentProfileIndex,
+                            onProfileChanged: (newIndex) {
+                              setState(() {
+                                _currentProfileIndex = newIndex;
+                              });
+                            },
+                            onTapCard: _navigateToProfileDetails,
+                            onLike: () {},
+                          ),
+                        ),
+
+                        Positioned(
+                          bottom: 0,
+                          child: ProfileActionButtons(
+                            onReject: () {
+                              _cardStackKey.currentState?.swipeLeft();
+                            },
+                            onLike: () {
+                              _cardStackKey.currentState?.swipeRight();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
 
-                    const SizedBox(height: 14),
-
-                    // Action Buttons
-                    ProfileActionButtons(
-                      onReject: () {
-                        _cardStackKey.currentState?.swipeLeft();
-                      },
-                      onLike: () {
-                        _cardStackKey.currentState?.swipeRight();
-                      },
-                      onDiscover: _navigateToDiscover,
-                    ),
-
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
